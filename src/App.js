@@ -7,25 +7,27 @@ const supabase = createClient(
 );
 
 function App() {
+  const [username, setUsername] = useState('');
   const [title, setTitle] = useState('');
   const [context, setContext] = useState('');
   const [posts, setPosts] = useState([]);
 
   const fetchPosts = async () => {
     const { data } = await supabase
-      .from('posts') // replace with your table name
+      .from('posts')
       .select('*')
       .order('created_at', { ascending: false });
 
-    setPosts(data);
+    setPosts(data || []);
   };
 
   const submitPost = async () => {
-    if (!title || !context) return;
+    if (!username || !title || !context) return;
     await supabase
       .from('posts')
-      .insert([{ title, context }]);
+      .insert([{ username, title, context }]);
 
+    setUsername('');
     setTitle('');
     setContext('');
     fetchPosts();
@@ -38,6 +40,12 @@ function App() {
   return (
     <div style={{ padding: '2rem' }}>
       <h1>pawPal</h1>
+      <input
+        placeholder="Your Name"
+        value={username}
+        onChange={e => setUsername(e.target.value)}
+        style={{ display: 'block', marginBottom: '0.5rem', width: '100%' }}
+      />
       <input
         placeholder="Title"
         value={title}
@@ -58,6 +66,7 @@ function App() {
       {posts.map(post => (
         <div key={post.id} style={{ marginBottom: '1rem' }}>
           <strong>{post.title}</strong>
+          <em> by {post.username || 'Anonymous'}</em>
           <p>{post.context}</p>
           <small>{new Date(post.created_at).toLocaleString()}</small>
         </div>

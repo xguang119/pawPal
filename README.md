@@ -1,3 +1,7 @@
+# pawPal
+CSE 115a Project
+=======
+>>>>>>> 8e2cb2a (Adding a temp username field)
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -68,3 +72,7 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+<<<<<<< HEAD
+=======
+>>>>>>> 487263b (the start of something that hopefully works)
+>>>>>>> 8e2cb2a (Adding a temp username field)
