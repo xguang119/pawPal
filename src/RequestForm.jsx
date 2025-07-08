@@ -1,4 +1,5 @@
-import { useState,useRef } from "react";
+import { useState,useRef,useEffect } from "react";
+import { supabase } from './supabaseClient';
 
 
 export default function PostForm(){
@@ -14,8 +15,24 @@ export default function PostForm(){
 
     const fileInputRef = useRef(null);
 
+    useEffect(() => {
+        const fetchPosts = async () => {
+          const { data, error } = await supabase
+            .from('requests')
+            .select('*')
+            .order('created_at', { ascending: false });
+      
+          if (error) {
+            console.error('Fetch error:', error);
+          } else {
+            setPost(data);
+          }
+        };
+      
+        fetchPosts();
+      }, []);
 
-    const submitTask=(task)=>{
+    const submitTask=async(task)=>{
         task.preventDefault();
         //If the required information is not filled in, the user is reminded to fill it in
         if (!service||!description||!contact||!date||!time){
@@ -24,35 +41,39 @@ export default function PostForm(){
         }
     
 
-    const newPost={
-        service,
-        description,
-        contact,
-        date,
-        time,
-        imageUrl: image ? URL.createObjectURL(image) : null,
-        createAt: new Date().toLocaleString(),
-        status : 'pending',
-    };
-    console.log('NewTask', newPost);
+        const {error} = await supabase.from('requests').insert([{
+            service,
+            description,
+            contact,
+            contact_type: contactType,
+            date,
+            time,
+            image_url: null, 
+            //imageUrl: image ? URL.createObjectURL(image) : null,
+            status : 'pending',
+        }]);
+        if (error) {
+            console.error('Insert error:', error);
+            setMessage('Post failed!');
+            return;
+        }
 
-    //post in order
-    setPost([newPost,...post]);
-    //reset after submit
-    setService('');
-    setDescription('');
-    setContact('');
-    setDate('');
-    setTime('');
-    setImage(null);
-    setContactType('');
-    setMessage('Successfully Post!');
 
-    if (fileInputRef.current) {
-        fileInputRef.current.value = null;
-    }
+        //reset after submit
+        setService('');
+        setDescription('');
+        setContact('');
+        setDate('');
+        setTime('');
+        setImage(null);
+        setContactType('');
+        setMessage('Successfully Post!');
+
+        if (fileInputRef.current) {
+            fileInputRef.current.value = null;
+        }
       
-    };
+        };
 
     const statusChange=(index)=>{
         setPost((prevP) => {
