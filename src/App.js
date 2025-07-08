@@ -1,16 +1,29 @@
 import { useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  process.env.REACT_APP_SUPABASE_URL,
-  process.env.REACT_APP_SUPABASE_KEY
-);
+import { supabase } from './supabaseClient';
+import Login from './login'; // Make sure this path is correct
 
 function App() {
+  const [user, setUser] = useState(null);
   const [username, setUsername] = useState('');
   const [title, setTitle] = useState('');
   const [context, setContext] = useState('');
   const [posts, setPosts] = useState([]);
+
+  
+  useEffect(() => {
+    const getSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) setUser(session.user);
+    };
+    getSession();
+
+    
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
+    });
+
+    return () => listener?.subscription?.unsubscribe();
+  }, []);
 
   const fetchPosts = async () => {
     const { data } = await supabase
@@ -37,9 +50,20 @@ function App() {
     fetchPosts();
   }, []);
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+  };
+
+  
+  if (!user) return <Login onLogin={setUser} />;
+
   return (
     <div style={{ padding: '2rem' }}>
       <h1>pawPal</h1>
+      <p>Welcome, {user.email}!</p>
+      <button onClick={handleLogout} style={{ marginBottom: '1rem' }}>Logout</button>
+
       <input
         placeholder="Your Name"
         value={username}
@@ -76,4 +100,3 @@ function App() {
 }
 
 export default App;
-
