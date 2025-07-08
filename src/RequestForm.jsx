@@ -15,22 +15,23 @@ export default function PostForm(){
 
     const fileInputRef = useRef(null);
 
+    //Pull request data from Supabase
     useEffect(() => {
         const fetchPosts = async () => {
-          const { data, error } = await supabase
-            .from('requests')
-            .select('*')
-            .order('created_at', { ascending: false });
-      
-          if (error) {
-            console.error('Fetch error:', error);
-          } else {
-            setPost(data);
-          }
+
+            const { data, error } = await supabase
+                .from('requests')
+                .select('*')
+                .order('created_at', { ascending: false });
+            //if error print error message else post
+            if (error) {
+                console.error('Fetch error:', error);
+            } else {
+                setPost(data);
+            }
         };
-      
         fetchPosts();
-      }, []);
+    }, []);
 
     const submitTask=async(task)=>{
         task.preventDefault();
@@ -39,21 +40,43 @@ export default function PostForm(){
             setMessage('Please fill in the information')
             return
         }
-    
 
-        const {error} = await supabase.from('requests').insert([{
+        let imageUrl=null;
+
+        //upload picture
+        if (image) {
+            const { data, error } = await supabase.storage
+              .from('image')
+              .upload(`public/${Date.now()}-${image.name}`, image);
+        
+            if (error) {
+              console.error('Upload error:', error);
+              setMessage('Image upload failed!');
+              return;
+            }
+
+        //get picture public url
+        const { data: urlData } = supabase
+            .storage
+            .from('image')
+            .getPublicUrl(data.path);
+        imageUrl = urlData.publicUrl;
+        }
+
+        //Insert a new record into the 'requests' table in Supabase
+        const {error : insertError} = await supabase.from('requests').insert([{
             service,
             description,
             contact,
             contact_type: contactType,
             date,
             time,
-            image_url: null, 
-            //imageUrl: image ? URL.createObjectURL(image) : null,
+            image_url: imageUrl, 
             status : 'pending',
         }]);
-        if (error) {
-            console.error('Insert error:', error);
+        //if error, print post fail
+        if (insertError) {
+            console.error('Insert error:', insertError);
             setMessage('Post failed!');
             return;
         }
@@ -75,12 +98,30 @@ export default function PostForm(){
       
         };
 
-    const statusChange=(index)=>{
-        setPost((prevP) => {
-            const update=[...prevP];
-            update[index].status='Accepted by helper';
-            return update
-        });
+    const statusChange=async(index)=>{
+        //get the post that need to change status
+        const targetPost = post[index];
+        //send an update request to Supabase to update the status field of the post to "Accepted by helper"
+        const { error } = await supabase
+            .from('requests')
+            .update({ status: 'Accepted by helper' })
+            .eq('id', targetPost.id);
+        //if error
+        if (error) {
+            console.error('Status update error:', error);
+            setMessage('Failed to update status');
+        } 
+        else {
+            setMessage('Status updated!');
+            const { data, error: fetchError } = await supabase
+                .from('requests')
+                .select('*')
+                .order('created_at', { ascending: false });
+        
+            if (!fetchError) {
+                    setPost(data);
+                }
+            }
     };
 
     return (
@@ -193,9 +234,9 @@ export default function PostForm(){
                     position: 'relative'
                 }}>
                     {/*Picture*/}
-                    {thepost.imageUrl &&(
+                    {thepost.image_url &&(
                         <img
-                        src={thepost.imageUrl}
+                        src={thepost.image_url}
                         alt="Unable to display the image"
                         style={{ width: '100%',  marginBottom: '8px' }}
                         />
