@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 export default function Feed() {
   const [posts, setPosts] = useState([]);
   const [username, setUsername] = useState('');
+  const [filter, setFilter] = useState('all');
   const navigate = useNavigate();
 
   // Fetch posts
@@ -55,6 +56,13 @@ export default function Feed() {
     fetchPosts();
   };
 
+  const filteredPosts = posts.filter(post => {
+    if (filter === 'all') return true;
+    if (filter === 'pending') return post.status === 'pending';
+    if (filter === 'mine') return post.username === username;
+    return post.service === filter;
+  });
+
   return (
     <div style={{ maxWidth: '650px', margin: '40px auto' }}>
       {/* Top Navigation Buttons */}
@@ -63,10 +71,25 @@ export default function Feed() {
         <button onClick={() => navigate('/profile')}>Go to Profile</button>
       </div>
 
+      {/* Filter Controls */}
+      <div style = {{marginBottom: '1rem' }}>
+        <label>Filter: </label>
+        <select value = {filter} onChange={(e) => setFilter(e.target.value)}>
+          <option value ="all">Show All</option>
+          <option value ="pending">Pending</option>
+          <option value ="mine">My Posts</option>
+          <option value ="Dog walking">Dog walking</option>
+          <option value ="Vaccinations">Vaccinations</option>
+          <option value ="Grooming">Grooming</option>
+          <option value ="Daycare">Daycare</option>
+        </select>
+      </div>
+      
+
       <h2>Recent Requests</h2>
 
-      {posts.length === 0 && <p>No requests yet.</p>}
-      {posts.map((post) => (
+      {filteredPosts.length === 0 && <p>No matching requests found.</p>}
+      {filteredPosts.map((post) => (
         <div key={post.id} style={{ border: '1px solid #ccc', padding: '12px', marginBottom: '12px' }}>
           {post.image_url && <img src={post.image_url} alt="Request" style={{ width: '100%', marginBottom: '8px' }} />}
           <p><strong>{post.service}</strong> · {post.date} {post.time}</p>
@@ -74,13 +97,7 @@ export default function Feed() {
           <p>Contact ({post.contact_type}): {post.contact}</p>
           <p>Status: {post.status === 'pending' ? 'Not accepted yet' : 'Accepted'}</p>
           <p>Posted by: {post.username || 'Unknown'}</p>
-          {post.helper && (
-            <p style={{ fontSize: '0.8em', color: '#007700' }}>
-              Accepted by: {post.helper}
-            </p>
-          )}
-
-          {/* Show Accept/Cancel button depending on conditions */}
+          {post.helper && <p style={{ fontSize: '0.8em', color: '#007700' }}>Accepted by: {post.helper}</p>}
           <button onClick={() => handleStatusChange(post)} style={{ marginTop: '0.5rem' }}>
             {
               post.status === 'Accepted by helper'
