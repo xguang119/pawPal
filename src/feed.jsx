@@ -1,0 +1,95 @@
+import { useState, useEffect } from "react";
+import { supabase } from "./supabaseClient";
+import { useNavigate } from "react-router-dom";
+
+export default function Feed() {
+  const [posts, setPosts] = useState([]);
+  const [username, setUsername] = useState('');
+  const navigate = useNavigate();
+
+  // Fetch posts
+  useEffect(() => {
+    fetchPosts();
+    fetchUser();
+  }, []);
+
+  const fetchPosts = async () => {
+    const { data, error } = await supabase
+      .from("requests")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (!error) setPosts(data);
+    else console.error(error);
+  };
+
+  const fetchUser = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) setUsername(user.email);
+  };
+
+  const handleStatusChange = async (post) => {
+    // If you're the poster and someone accepted → cancel
+    if (post.username === username && post.status === 'Accepted by helper') {
+      await supabase
+        .from('requests')
+        .update({ status: 'pending', helper: null })
+        .eq('id', post.id);
+    }
+
+    // If you're the helper and accepted → cancel
+    else if (post.helper === username && post.status === 'Accepted by helper') {
+      await supabase
+        .from('requests')
+        .update({ status: 'pending', helper: null })
+        .eq('id', post.id);
+    }
+
+    // If post is unclaimed and not yours → accept
+    else if (post.status === 'pending' && post.username !== username) {
+      await supabase
+        .from('requests')
+        .update({ status: 'Accepted by helper', helper: username })
+        .eq('id', post.id);
+    }
+
+    fetchPosts();
+  };
+
+  return (
+    <div style={{ maxWidth: '650px', margin: '40px auto' }}>
+      {/* Top Navigation Buttons */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
+        <button onClick={() => navigate('/request')}>Post a New Request</button>
+        <button onClick={() => navigate('/profile')}>Go to Profile</button>
+      </div>
+
+      <h2>Recent Requests</h2>
+
+      {posts.length === 0 && <p>No requests yet.</p>}
+      {posts.map((post) => (
+        <div key={post.id} style={{ border: '1px solid #ccc', padding: '12px', marginBottom: '12px' }}>
+          {post.image_url && <img src={post.image_url} alt="Request" style={{ width: '100%', marginBottom: '8px' }} />}
+          <p><strong>{post.service}</strong> · {post.date} {post.time}</p>
+          <p>{post.description}</p>
+          <p>Contact ({post.contact_type}): {post.contact}</p>
+          <p>Status: {post.status === 'pending' ? 'Not accepted yet' : 'Accepted'}</p>
+          <p>Posted by: {post.username || 'Unknown'}</p>
+          {post.helper && (
+            <p style={{ fontSize: '0.8em', color: '#007700' }}>
+              Accepted by: {post.helper}
+            </p>
+          )}
+
+          {/* Show Accept/Cancel button depending on conditions */}
+          <button onClick={() => handleStatusChange(post)} style={{ marginTop: '0.5rem' }}>
+            {
+              post.status === 'Accepted by helper'
+                ? 'Cancel'
+                : (post.username !== username ? 'Accept' : 'Waiting...')
+            }
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+}

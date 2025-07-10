@@ -1,5 +1,6 @@
 import { useState,useRef,useEffect } from "react";
 import { supabase } from './supabaseClient';
+import { useNavigate } from 'react-router-dom';
 
 
 export default function PostForm(){
@@ -12,8 +13,13 @@ export default function PostForm(){
     const [image, setImage]=useState(null); //can choose to post a image
     const [post, setPost]=useState([]);//the list of every posts
     const [message, setMessage]=useState('');//message to tell the user if successfully post
+    const [username, setUsername] = useState('');//show the user name
 
     const fileInputRef = useRef(null);
+    const navigate = useNavigate();
+    const backTofeed = () => {
+        navigate('/login');
+      };
 
     //Pull request data from Supabase
     useEffect(() => {
@@ -32,6 +38,16 @@ export default function PostForm(){
         };
         fetchPosts();
     }, []);
+    //try to pull the user id
+    useEffect(() => {
+        const getUser = async () => {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            setUsername(user.email);
+          }
+        };
+        getUser();
+      }, []);
 
     const submitTask=async(task)=>{
         task.preventDefault();
@@ -73,6 +89,7 @@ export default function PostForm(){
             time,
             image_url: imageUrl, 
             status : 'pending',
+            username: username 
         }]);
         //if error, print post fail
         if (insertError) {
@@ -97,31 +114,63 @@ export default function PostForm(){
         }
       
         };
+    //Avoid duplication of code
+    const refreshPosts = async () => {
+        const { data, error } = await supabase
+              .from('requests')
+              .select('*')
+              .order('created_at', { ascending: false });
+        if (!error){
+            setPost(data);
+        }
+    };
+        
+          
 
     const statusChange=async(index)=>{
-        //get the post that need to change status
+        //the poster can decline the helper
         const targetPost = post[index];
-        //send an update request to Supabase to update the status field of the post to "Accepted by helper"
-        const { error } = await supabase
-            .from('requests')
-            .update({ status: 'Accepted by helper' })
-            .eq('id', targetPost.id);
-        //if error
-        if (error) {
-            console.error('Status update error:', error);
-            setMessage('Failed to update status');
-        } 
-        else {
-            setMessage('Status updated!');
-            const { data, error: fetchError } = await supabase
-                .from('requests')
-                .select('*')
-                .order('created_at', { ascending: false });
+        if (targetPost.username === username && targetPost.status === 'Accepted by helper') {
+            const { error } = await supabase
+              .from('requests')
+              .update({ status: 'pending', helper: null })
+              .eq('id', targetPost.id);
         
-            if (!fetchError) {
-                    setPost(data);
-                }
+            if (error) {
+              console.error('Status revert error:', error);
+            } else {
+              refreshPosts();
             }
+            return;
+        }
+        //helper can cancle
+        if (targetPost.helper === username && targetPost.status === 'Accepted by helper') {
+            const { error } = await supabase
+              .from('requests')
+              .update({ status: 'pending', helper: null })
+              .eq('id', targetPost.id);
+        
+            if (error) {
+              console.error('Helper cancel error:', error);
+            } else {
+              refreshPosts();
+            }
+            return;
+        }
+        //only can accpect when pending and the user is not the poster 
+        if (targetPost.status === 'pending' && targetPost.username !== username) {
+            const { error } = await supabase
+              .from('requests')
+              .update({ status: 'Accepted by helper', helper: username })
+              .eq('id', targetPost.id);
+        
+            if (error) {
+              console.error('Accept error:', error);
+
+            } else {
+              refreshPosts();
+            }
+          }
     };
 
     return (
@@ -137,6 +186,9 @@ export default function PostForm(){
                 marginBottom: '24px'}}>
                 Post the Request~
             </h2>
+            <div style={{ display: "flex", justifyContent: "flex-end", padding: "10px" }}>
+                <button onClick={backTofeed}>Cancel</button>
+                </div>
 
             <form onSubmit={submitTask}>
                 {/*What kind of service*/}
@@ -245,7 +297,11 @@ export default function PostForm(){
                     {/*task*/}
                     <p><strong>{thepost.service}</strong> · {thepost.date} {thepost.time}</p>
                     <p style={{ fontSize: '0.9em'}}>{thepost.description}</p>
-                    <p style={{ fontSize: '0.8em', color: '#666' }}> {thepost.contact}</p>
+                    {/*contact*/}
+                    <p style={{ fontSize: '0.8em', color: '#666' }}>
+                        Contact information ({thepost.contact_type}): {thepost.contact}
+                    </p>
+
 
                     {/*status*/}
                     <p style={{ fontSize: '0.8em', color: '#444' }}>
@@ -253,10 +309,19 @@ export default function PostForm(){
                     </p>
 
                     {/*accept botton*/}
-                    {thepost.status === 'pending' && (
-                        <button onClick={() => statusChange(index)}>Accpect</button>
+                    <button onClick={() => statusChange(index)}>
+                        {thepost.status === 'Accepted by helper' ? 'Cancel' : 'Accept'}
+                    </button>
+                    {/*show the username*/}
+                    <p style={{ fontSize: '0.8em', color: '#999' }}>
+                        Posted by: {thepost.username || 'Unknown'}
+                    </p>
+                    {/*show helper*/}
+                    {thepost.helper && (
+                        <p style={{ fontSize: '0.8em', color: '#007700' }}>
+                            Accepted by: {thepost.helper}
+                        </p>
                     )}
-
                     </div>
             ))}
 
