@@ -115,33 +115,68 @@ export default function PostForm(){
         }
       
         };
+    //Avoid duplication of code
+    const refreshPosts = async () => {
+        const { data, error } = await supabase
+              .from('requests')
+              .select('*')
+              .order('created_at', { ascending: false });
+        if (!error){
+            setPost(data);
+        }
+    };
+        
+          
 
     const statusChange=async(index)=>{
-        //get the post that need to change status
+        //the poster can decline the helper
         const targetPost = post[index];
-        const newStatus = targetPost.status === 'Accepted by helper' ? 'pending' : 'Accepted by helper';
-
-        //send an update request to Supabase to update the status field of the post to "Accepted by helper" or "pending"
-        const { error } = await supabase
-            .from('requests')
-            .update({ status: newStatus })
-            .eq('id', targetPost.id);
-        //if error
-        if (error) {
-            console.error('Status update error:', error);
-            setMessage('Failed to update status');
-        } 
-        else {
-            setMessage('Status updated!');
-            const { data, error: fetchError } = await supabase
-                .from('requests')
-                .select('*')
-                .order('created_at', { ascending: false });
+        if (targetPost.username === username && targetPost.status === 'Accepted by helper') {
+            const { error } = await supabase
+              .from('requests')
+              .update({ status: 'pending', helper: null })
+              .eq('id', targetPost.id);
         
-            if (!fetchError) {
-                    setPost(data);
-                }
+            if (error) {
+              console.error('Status revert error:', error);
+              setMessage('Failed to revert status');
+            } else {
+              setMessage('Helper canceled.');
+              refreshPosts();
             }
+            return;
+        }
+        //helper can cancle
+        if (targetPost.helper === username && targetPost.status === 'Accepted by helper') {
+            const { error } = await supabase
+              .from('requests')
+              .update({ status: 'pending', helper: null })
+              .eq('id', targetPost.id);
+        
+            if (error) {
+              console.error('Helper cancel error:', error);
+              setMessage('Failed to cancel your acceptance');
+            } else {
+              setMessage('You have canceled your acceptance.');
+              refreshPosts();
+            }
+            return;
+        }
+        //only can accpect when pending and the user is not the poster 
+        if (targetPost.status === 'pending' && targetPost.username !== username) {
+            const { error } = await supabase
+              .from('requests')
+              .update({ status: 'Accepted by helper', helper: username })
+              .eq('id', targetPost.id);
+        
+            if (error) {
+              console.error('Accept error:', error);
+              setMessage('Failed to accept task');
+            } else {
+              setMessage('Task accepted!');
+              refreshPosts();
+            }
+          }
     };
 
     return (
@@ -287,8 +322,12 @@ export default function PostForm(){
                     <p style={{ fontSize: '0.8em', color: '#999' }}>
                         Posted by: {thepost.username || 'Unknown'}
                     </p>
-
-
+                    {/*show helper*/}
+                    {thepost.helper && (
+                        <p style={{ fontSize: '0.8em', color: '#007700' }}>
+                            Accepted by: {thepost.helper}
+                        </p>
+                    )}
                     </div>
             ))}
 
