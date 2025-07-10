@@ -11,15 +11,15 @@ export default function Feed() {
 
   return (
     <div style={{ padding: '2rem', maxWidth: '400px', margin: 'auto', textAlign: 'center' }}>
-      <h1>Welcome to Your Feed</h1>
+      <h1>Temp Feed</h1>
       <button style={{ margin: '1rem' }} onClick={() => navigate('/request')}>
-        Go to Request Form
+        Add Post
       </button>
       <button style={{ margin: '1rem' }} onClick={() => navigate('/profile')}>
-        Go to Profile
+        Profile
       </button>
       <br />
-      <button onClick={handleLogout} style={{ marginTop: '2rem', backgroundColor: '#f44336', color: 'white' }}>
+      <button onClick={handleLogout}>
         Logout
       </button>
     </div>
