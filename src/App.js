@@ -1,6 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import RequestForm from "./RequestForm";
 import Login from "./login";
+import Feed from "./Feed";
+import Profile from "./Profile";
+
 import { useEffect, useState } from "react";
 import { supabase } from './supabaseClient';
 
@@ -21,13 +24,23 @@ function App() {
 
   if (checking) return <p>Loading...</p>; //avoid blank
 
-  return (
+   return (
     <Router>
       <Routes>
-        {/*root path "/": If the user is logged in, display RequestForm*/}
-        <Route path="/" element={user ? <RequestForm /> : <Navigate to="/login" />} />
-        {/*login path "/login": If user is not logged in, display login page*/}
-        <Route path="/login" element={<Login />} />
+        {/* Login page */}
+        <Route path="/login" element={!user ? <Login /> : <Navigate to="/feed" />} />
+
+        {/* Feed page */}
+        <Route path="/feed" element={user ? <Feed /> : <Navigate to="/login" />} />
+
+        {/* Request form */}
+        <Route path="/request" element={user ? <RequestForm /> : <Navigate to="/login" />} />
+
+        {/* Profile page */}
+        <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" />} />
+
+        {/* Redirect any unknown path to login */}
+        <Route path="*" element={<Navigate to={user ? "/feed" : "/login"} />} />
       </Routes>
     </Router>
   );

@@ -15,7 +15,7 @@ function Login({ onLogin }) {
       setErrorMsg(error.message);
     } else {
 
-      navigate('/');
+      navigate('/feed');
     }
   };
 
