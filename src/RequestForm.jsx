@@ -101,10 +101,12 @@ export default function PostForm(){
     const statusChange=async(index)=>{
         //get the post that need to change status
         const targetPost = post[index];
-        //send an update request to Supabase to update the status field of the post to "Accepted by helper"
+        const newStatus = targetPost.status === 'Accepted by helper' ? 'pending' : 'Accepted by helper';
+
+        //send an update request to Supabase to update the status field of the post to "Accepted by helper" or "pending"
         const { error } = await supabase
             .from('requests')
-            .update({ status: 'Accepted by helper' })
+            .update({ status: newStatus })
             .eq('id', targetPost.id);
         //if error
         if (error) {
@@ -253,9 +255,9 @@ export default function PostForm(){
                     </p>
 
                     {/*accept botton*/}
-                    {thepost.status === 'pending' && (
-                        <button onClick={() => statusChange(index)}>Accpect</button>
-                    )}
+                    <button onClick={() => statusChange(index)}>
+                        {thepost.status === 'Accepted by helper' ? 'Cancel' : 'Accept'}
+                    </button>
 
                     </div>
             ))}
