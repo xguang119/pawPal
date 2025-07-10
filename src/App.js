@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import RequestForm from "./RequestForm";
 import Login from "./login";
-import Feed from "./Feed";
-import Profile from "./Profile";
+import Feed from "./feed";
+import Profile from "./profile";
 
 import { useEffect, useState } from "react";
 import { supabase } from './supabaseClient';
