@@ -19,9 +19,6 @@ export default function Feed() {
         Profile
       </button>
       <br />
-      <button onClick={handleLogout}>
-        Logout
-      </button>
     </div>
   );
 }
