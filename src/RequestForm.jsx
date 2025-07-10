@@ -172,6 +172,22 @@ export default function PostForm(){
               refreshPosts();
             }
           }
+
+          // if contact_type is email， send the email notification by using emailJS
+          if (targetPost.contact_type === 'email') {
+              const emailjs = await import('emailjs-com');
+              emailjs.init('AlJdHzVYqtjhhs46q'); 
+              //service id and template id on emailJS
+              emailjs.send('service_a4bdl1b', 'template_z4pdpbp', {
+                  contact: targetPost.contact
+              }).then((res) => {
+                  console.log(' Email sent to poster!', res.status, res.text);
+              }).catch((err) => {
+                  console.error(' Email send error:', err);
+              });
+              refreshPosts();
+          }
+  
     };
 
     return (
