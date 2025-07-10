@@ -17,13 +17,33 @@ export default function PostRequest() {
 
   // Fetch logged-in user email
   useEffect(() => {
-    const fetchUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) setUsername(user.email);
-    };
-    fetchUser();
+          const fetchPosts = async () => {
+  
+              const { data, error } = await supabase
+                  .from('requests')
+                  .select('*')
+                  .order('created_at', { ascending: false });
+              //if error print error message else post
+              if (error) {
+                  console.error('Fetch error:', error);
+              } else {
+                  setPost(data);
+              }
+          };
+          fetchPosts();
   }, []);
 
+  useEffect(() => {
+          const getUser = async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+              setUsername(user.email);
+            }
+          };
+          getUser();
+        }, []);
+
+        
   const submitTask = async (e) => {
     e.preventDefault();
 
