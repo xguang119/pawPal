@@ -1,5 +1,6 @@
 import { useState,useRef,useEffect } from "react";
 import { supabase } from './supabaseClient';
+import { useNavigate } from 'react-router-dom';
 
 
 export default function PostForm(){
@@ -12,8 +13,14 @@ export default function PostForm(){
     const [image, setImage]=useState(null); //can choose to post a image
     const [post, setPost]=useState([]);//the list of every posts
     const [message, setMessage]=useState('');//message to tell the user if successfully post
+    const [username, setUsername] = useState('');//show the user name
 
     const fileInputRef = useRef(null);
+    const navigate = useNavigate();
+    const handleLogout = async () => {
+        await supabase.auth.signOut();
+        navigate('/login');
+      };
 
     //Pull request data from Supabase
     useEffect(() => {
@@ -32,6 +39,16 @@ export default function PostForm(){
         };
         fetchPosts();
     }, []);
+    //try to pull the user id
+    useEffect(() => {
+        const getUser = async () => {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            setUsername(user.email);
+          }
+        };
+        getUser();
+      }, []);
 
     const submitTask=async(task)=>{
         task.preventDefault();
@@ -73,6 +90,7 @@ export default function PostForm(){
             time,
             image_url: imageUrl, 
             status : 'pending',
+            username: username 
         }]);
         //if error, print post fail
         if (insertError) {
@@ -139,6 +157,9 @@ export default function PostForm(){
                 marginBottom: '24px'}}>
                 Post the Request~
             </h2>
+            <div style={{ display: "flex", justifyContent: "flex-end", padding: "10px" }}>
+                <button onClick={handleLogout}>Logout</button>
+                </div>
 
             <form onSubmit={submitTask}>
                 {/*What kind of service*/}
@@ -247,7 +268,11 @@ export default function PostForm(){
                     {/*task*/}
                     <p><strong>{thepost.service}</strong> · {thepost.date} {thepost.time}</p>
                     <p style={{ fontSize: '0.9em'}}>{thepost.description}</p>
-                    <p style={{ fontSize: '0.8em', color: '#666' }}> {thepost.contact}</p>
+                    {/*contact*/}
+                    <p style={{ fontSize: '0.8em', color: '#666' }}>
+                        Contact information ({thepost.contact_type}): {thepost.contact}
+                    </p>
+
 
                     {/*status*/}
                     <p style={{ fontSize: '0.8em', color: '#444' }}>
@@ -258,6 +283,11 @@ export default function PostForm(){
                     <button onClick={() => statusChange(index)}>
                         {thepost.status === 'Accepted by helper' ? 'Cancel' : 'Accept'}
                     </button>
+                    {/*show the username*/}
+                    <p style={{ fontSize: '0.8em', color: '#999' }}>
+                        Posted by: {thepost.username || 'Unknown'}
+                    </p>
+
 
                     </div>
             ))}
