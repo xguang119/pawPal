@@ -81,78 +81,110 @@ export default function PostRequest() {
     if (fileInputRef.current) fileInputRef.current.value = null;
   };
 
-  return (
-    <div style={{ maxWidth: '650px', margin: '40px auto' }}>
-      <button onClick={() => navigate('/feed')} style={{ marginBottom: '1rem' }}>
-        Back to Feed
-      </button>
+   return (
+        <div style={{
+            maxWidth : '650px', 
+            margin:'40px auto',
+            }}>
+            <h2 style={{
+                fontFamily: 'Arial, sans-serif',
+                fontSize: '32px',
+                fontWeight: 'bold',
+                color: '#333',
+                marginBottom: '24px'}}>
+                Post the Request~
+            </h2>
+            <div style={{ display: "flex", justifyContent: "flex-end", padding: "10px" }}>
+                <button onClick={backTofeed}>Cancel</button>
+                </div>
 
-      <h2>Post a New Request</h2>
-      <form onSubmit={submitTask}>
-        <label>Service Type:</label>
-        <select value={service} onChange={(e) => setService(e.target.value)} required>
-          <option value="">Select</option>
-          <option value="Dog walking">Dog walking</option>
-          <option value="Vaccinations">Vaccinations</option>
-          <option value="Grooming">Grooming</option>
-          <option value="Daycare">Daycare</option>
-        </select>
+            <form onSubmit={submitTask}>
+                {/*What kind of service*/}
+                <div style={{ marginBottom: '12px' }}>
+                <label>Service Type: </label>
+                <select value={service} onChange={(task)=>setService(task.target.value)}required>
+                    <option value="">(Please select)</option>
+                    <option value="Dog walking">Dog walking</option>
+                    <option value="Vaccinations">Vaccinations</option>
+                    <option value="Grooming">Grooming</option>
+                    <option value="Daycare">Daycare</option>        
+                </select>
+                </div>
+                
+                {/*Describe the task*/}
+                <div style={{ marginBottom: '12px' }}>
+                <label>Description: </label>
+                <textarea
+                placeholder="Describe your task..."
+                value={description}
+                onChange={(task)=>setDescription(task.target.value)}
+                rows={1}
+                required
+                />
+                </div>
 
-        <label>Description:</label>
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          required
-          rows={3}
-        />
+                {/*How to contact? emial or phone number*/}
+                <div style={{ marginBottom: '12px' }}>
+                <label>How would you like us to contact you ?:</label>
+                <select value={contactType} onChange={(task)=>setContactType(task.target.value)}required>
+                <option value="">(Please select)</option>
+                <option value="email">email</option>
+                <option value="phone call">phone call</option>
+                </select>
+                </div>
 
-        <label>Contact Type:</label>
-        <select value={contactType} onChange={(e) => setContactType(e.target.value)} required>
-          <option value="">Select</option>
-          <option value="email">Email</option>
-          <option value="phone call">Phone Call</option>
-        </select>
+                {/*contact info*/}
+                <div style={{ marginBottom: '12px' }}>
+                <label>Please enter your contact Information: </label>
+                <textarea
+                placeholder="..."
+                value={contact}
+                onChange={(task)=>setContact(task.target.value)}
+                rows={1}
+                required
+                />
+                </div>
 
-        <label>Contact Info:</label>
-        <textarea
-          value={contact}
-          onChange={(e) => setContact(e.target.value)}
-          required
-          rows={1}
-        />
+                {/*Date*/}
+                <div style={{ marginBottom: '12px' }}>
+                <label>Service Date: </label>
+                <textarea
+                placeholder="ex:Jan 1"
+                value={date}
+                onChange={(task)=>setDate(task.target.value)}
+                rows={1}
+                required
+                />
+                </div>
 
-        <label>Service Date:</label>
-        <input
-          type="text"
-          placeholder="ex: Jan 1"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-          required
-        />
+                {/*Time*/}
+                <div style={{ marginBottom: '12px' }}>
+                <label>Service Time: </label>
+                <textarea
+                placeholder="ex:10 am to 3 pm"
+                value={time}
+                onChange={(task)=>setTime(task.target.value)}
+                rows={1}
+                required
+                />
+                </div>
 
-        <label>Service Time:</label>
-        <input
-          type="text"
-          placeholder="ex: 10 am to 3 pm"
-          value={time}
-          onChange={(e) => setTime(e.target.value)}
-          required
-        />
+                {/*Photo?*/}
+                <div style={{ marginBottom: '12px' }}>
+                <label>Upload Photo(optional): </label>
+                <input
+                type="file"
+                accept="image/*"
+                onChange={(task)=>setImage(task.target.files[0])}
+                ref={fileInputRef}
+                />
+                </div>
 
-        <label>Upload Photo (optional):</label>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setImage(e.target.files[0])}
-          ref={fileInputRef}
-        />
+                {/*Submit botton*/}
+                <button type="submit">Post</button>
+            </form>
+            {message && <p>{message}</p>}
 
-        <button type="submit" style={{ marginTop: '1rem' }}>
-          Post Request
-        </button>
-      </form>
-
-      {message && <p style={{ marginTop: '1rem' }}>{message}</p>}
     </div>
   );
 }

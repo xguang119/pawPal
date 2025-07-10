@@ -22,32 +22,26 @@ export default function Feed() {
   }, []);
 
   return (
-    <div style={{ maxWidth: "650px", margin: "40px auto" }}>
+    <div style={{ maxWidth: '650px', margin: '40px auto' }}>
+      {/* Top Navigation Buttons */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
+        <button onClick={() => navigate('/request')}>Post a New Request</button>
+        <button onClick={() => navigate('/profile')}>Go to Profile</button>
+      </div>
+
       <h2>Recent Requests</h2>
+
       {posts.length === 0 && <p>No requests yet.</p>}
       {posts.map((post, index) => (
-        <div
-          key={post.id || index}
-          style={{ border: "1px solid #ccc", padding: "12px", marginBottom: "12px" }}
-        >
-          {post.image_url && (
-            <img src={post.image_url} alt="Request" style={{ width: "100%", marginBottom: "8px" }} />
-          )}
-          <p>
-            <strong>{post.service}</strong> · {post.date} {post.time}
-          </p>
+        <div key={post.id || index} style={{ border: '1px solid #ccc', padding: '12px', marginBottom: '12px' }}>
+          {post.image_url && <img src={post.image_url} alt="Request" style={{ width: '100%', marginBottom: '8px' }} />}
+          <p><strong>{post.service}</strong> · {post.date} {post.time}</p>
           <p>{post.description}</p>
-          <p>
-            Contact ({post.contact_type}): {post.contact}
-          </p>
-          <p>Status: {post.status === "pending" ? "Not accepted yet" : "Accepted"}</p>
-          <p>Posted by: {post.username || "Unknown"}</p>
+          <p>Contact ({post.contact_type}): {post.contact}</p>
+          <p>Status: {post.status === 'pending' ? 'Not accepted yet' : 'Accepted'}</p>
+          <p>Posted by: {post.username || 'Unknown'}</p>
         </div>
       ))}
-      <button onClick={() => navigate("/request")} style={{ marginTop: "1rem" }}>
-        Post a New Request
-      </button>
-      <button onClick={() => navigate("/profile")}>Go to Profile</button>
     </div>
   );
 }
