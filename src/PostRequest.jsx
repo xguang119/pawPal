@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react"; // add useEffect here
 import { supabase } from './supabaseClient';
 import { useNavigate } from 'react-router-dom';
 
@@ -17,33 +17,15 @@ export default function PostRequest() {
 
   // Fetch logged-in user email
   useEffect(() => {
-          const fetchPosts = async () => {
-  
-              const { data, error } = await supabase
-                  .from('requests')
-                  .select('*')
-                  .order('created_at', { ascending: false });
-              //if error print error message else post
-              if (error) {
-                  console.error('Fetch error:', error);
-              } else {
-                  setPost(data);
-              }
-          };
-          fetchPosts();
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUsername(user.email);
+      }
+    };
+    getUser();
   }, []);
 
-  useEffect(() => {
-          const getUser = async () => {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (user) {
-              setUsername(user.email);
-            }
-          };
-          getUser();
-        }, []);
-
-        
   const submitTask = async (e) => {
     e.preventDefault();
 
@@ -98,79 +80,13 @@ export default function PostRequest() {
 
   return (
     <div style={{ maxWidth: '650px', margin: '40px auto' }}>
-        <button onClick={() => navigate('/feed')}>Back to Feed</button>
+      <button onClick={() => navigate('/feed')}>Back to Feed</button>
 
       <h2>Post a New Request</h2>
       <form onSubmit={submitTask}>
-        {/* Service type */}
         <label>Service Type:</label>
         <select value={service} onChange={(e) => setService(e.target.value)} required>
           <option value="">Select</option>
           <option value="Dog walking">Dog walking</option>
           <option value="Vaccinations">Vaccinations</option>
-          <option value="Grooming">Grooming</option>
-          <option value="Daycare">Daycare</option>
-        </select>
-
-        {/* Description */}
-        <label>Description:</label>
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          required
-          rows={3}
-        />
-
-        {/* Contact Type */}
-        <label>Contact Type:</label>
-        <select value={contactType} onChange={(e) => setContactType(e.target.value)} required>
-          <option value="">Select</option>
-          <option value="email">Email</option>
-          <option value="phone call">Phone Call</option>
-        </select>
-
-        {/* Contact Info */}
-        <label>Contact Info:</label>
-        <textarea
-          value={contact}
-          onChange={(e) => setContact(e.target.value)}
-          required
-          rows={1}
-        />
-
-        {/* Date */}
-        <label>Service Date:</label>
-        <input
-          type="text"
-          placeholder="ex: Jan 1"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-          required
-        />
-
-        {/* Time */}
-        <label>Service Time:</label>
-        <input
-          type="text"
-          placeholder="ex: 10 am to 3 pm"
-          value={time}
-          onChange={(e) => setTime(e.target.value)}
-          required
-        />
-
-        {/* Upload Image */}
-        <label>Upload Photo (optional):</label>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setImage(e.target.files[0])}
-          ref={fileInputRef}
-        />
-
-        <button type="submit" style={{ marginTop: '1rem' }}>Post Request</button>
-      </form>
-
-      {message && <p>{message}</p>}
-    </div>
-  );
-}
+          <opti
