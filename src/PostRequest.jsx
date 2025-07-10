@@ -14,7 +14,7 @@ export default function PostRequest() {
   const [username, setUsername] = useState('');
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
-  const backToFeed = () => navigate('/feed');
+  const backTofeed = () => navigate('/feed');
 
   // Fetch logged-in user's email
   useEffect(() => {
