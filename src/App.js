@@ -5,6 +5,7 @@ import PostRequest from "./PostRequest";
 import Profile from "./profile";
 import { useEffect, useState } from "react";
 import { supabase } from "./supabaseClient";
+import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 
 function App() {
   const [user, setUser] = useState(null);
