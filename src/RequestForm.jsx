@@ -139,9 +139,7 @@ export default function PostForm(){
         
             if (error) {
               console.error('Status revert error:', error);
-              setMessage('Failed to revert status');
             } else {
-              setMessage('Helper canceled.');
               refreshPosts();
             }
             return;
@@ -155,9 +153,7 @@ export default function PostForm(){
         
             if (error) {
               console.error('Helper cancel error:', error);
-              setMessage('Failed to cancel your acceptance');
             } else {
-              setMessage('You have canceled your acceptance.');
               refreshPosts();
             }
             return;
@@ -171,9 +167,8 @@ export default function PostForm(){
         
             if (error) {
               console.error('Accept error:', error);
-              setMessage('Failed to accept task');
+
             } else {
-              setMessage('Task accepted!');
               refreshPosts();
             }
           }
