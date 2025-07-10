@@ -14,13 +14,25 @@ function App() {
 
   //check if the user login
   useEffect(() => {
-    const checkUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();//get the current user
-      setUser(user);//If there is a logged in user, then save
-      setChecking(false);
-    };
-    checkUser();
-  }, []);
+  const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+    setUser(session?.user || null); // Clear user on logout
+    setChecking(false);             // Stop "loading" state
+  });
+
+  // Also check current user once on load
+  const getUser = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    setUser(user);
+    setChecking(false);
+  };
+
+  getUser();
+
+  return () => {
+    authListener.subscription.unsubscribe(); // Cleanup
+  };
+}, []);
+
 
   if (checking) return <p>Loading...</p>; //avoid blank
 
