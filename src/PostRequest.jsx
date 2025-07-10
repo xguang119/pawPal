@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react"; // add useEffect here
+import { useState, useRef, useEffect } from "react";
 import { supabase } from './supabaseClient';
 import { useNavigate } from 'react-router-dom';
 
@@ -15,7 +15,7 @@ export default function PostRequest() {
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
 
-  // Fetch logged-in user email
+  // Fetch logged-in user's email
   useEffect(() => {
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -35,6 +35,7 @@ export default function PostRequest() {
     }
 
     let imageUrl = null;
+
     if (image) {
       const { data, error } = await supabase.storage
         .from('image')
@@ -45,7 +46,10 @@ export default function PostRequest() {
         return;
       }
 
-      const { data: urlData } = supabase.storage.from('image').getPublicUrl(data.path);
+      const { data: urlData } = supabase.storage
+        .from('image')
+        .getPublicUrl(data.path);
+
       imageUrl = urlData.publicUrl;
     }
 
@@ -58,7 +62,7 @@ export default function PostRequest() {
       time,
       image_url: imageUrl,
       status: 'pending',
-      username
+      username,
     }]);
 
     if (insertError) {
@@ -67,7 +71,6 @@ export default function PostRequest() {
     }
 
     setMessage('Successfully posted!');
-    // Reset form fields
     setService('');
     setDescription('');
     setContact('');
@@ -80,7 +83,9 @@ export default function PostRequest() {
 
   return (
     <div style={{ maxWidth: '650px', margin: '40px auto' }}>
-      <button onClick={() => navigate('/feed')}>Back to Feed</button>
+      <button onClick={() => navigate('/feed')} style={{ marginBottom: '1rem' }}>
+        Back to Feed
+      </button>
 
       <h2>Post a New Request</h2>
       <form onSubmit={submitTask}>
@@ -142,10 +147,12 @@ export default function PostRequest() {
           ref={fileInputRef}
         />
 
-        <button type="submit" style={{ marginTop: '1rem' }}>Post Request</button>
+        <button type="submit" style={{ marginTop: '1rem' }}>
+          Post Request
+        </button>
       </form>
 
-      {message && <p>{message}</p>}
+      {message && <p style={{ marginTop: '1rem' }}>{message}</p>}
     </div>
   );
 }
