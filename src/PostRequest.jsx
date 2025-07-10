@@ -89,4 +89,63 @@ export default function PostRequest() {
           <option value="">Select</option>
           <option value="Dog walking">Dog walking</option>
           <option value="Vaccinations">Vaccinations</option>
-          <opti
+          <option value="Grooming">Grooming</option>
+          <option value="Daycare">Daycare</option>
+        </select>
+
+        <label>Description:</label>
+        <textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          required
+          rows={3}
+        />
+
+        <label>Contact Type:</label>
+        <select value={contactType} onChange={(e) => setContactType(e.target.value)} required>
+          <option value="">Select</option>
+          <option value="email">Email</option>
+          <option value="phone call">Phone Call</option>
+        </select>
+
+        <label>Contact Info:</label>
+        <textarea
+          value={contact}
+          onChange={(e) => setContact(e.target.value)}
+          required
+          rows={1}
+        />
+
+        <label>Service Date:</label>
+        <input
+          type="text"
+          placeholder="ex: Jan 1"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          required
+        />
+
+        <label>Service Time:</label>
+        <input
+          type="text"
+          placeholder="ex: 10 am to 3 pm"
+          value={time}
+          onChange={(e) => setTime(e.target.value)}
+          required
+        />
+
+        <label>Upload Photo (optional):</label>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setImage(e.target.files[0])}
+          ref={fileInputRef}
+        />
+
+        <button type="submit" style={{ marginTop: '1rem' }}>Post Request</button>
+      </form>
+
+      {message && <p>{message}</p>}
+    </div>
+  );
+}
