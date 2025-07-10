@@ -17,8 +17,7 @@ export default function PostForm(){
 
     const fileInputRef = useRef(null);
     const navigate = useNavigate();
-    const handleLogout = async () => {
-        await supabase.auth.signOut();
+    const backTofeed = () => {
         navigate('/login');
       };
 
@@ -188,7 +187,7 @@ export default function PostForm(){
                 Post the Request~
             </h2>
             <div style={{ display: "flex", justifyContent: "flex-end", padding: "10px" }}>
-                <button onClick={handleLogout}>Logout</button>
+                <button onClick={backTofeed}>Cancel</button>
                 </div>
 
             <form onSubmit={submitTask}>

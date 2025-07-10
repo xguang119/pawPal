@@ -28,7 +28,7 @@ export default function Profile() {
 
       <div style={{ marginTop: '2rem' }}>
         <button onClick={() => navigate('/feed')} style={{ margin: '1rem' }}>
-          Back to Feed
+          Cancel
         </button>
         <button onClick={handleLogout} style={{ backgroundColor: '#f44336', color: 'white' }}>
           Logout
