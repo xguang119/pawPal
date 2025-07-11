@@ -1,60 +1,69 @@
-import React from 'react';
+import { useState } from 'react';
+import { supabase } from './supabaseClient';
+import { useNavigate } from 'react-router-dom';
 import {
   MDBBtn,
   MDBContainer,
   MDBRow,
   MDBCol,
-  MDBInput
+  MDBInput,
 } from 'mdb-react-ui-kit';
-import './App.css'; 
+import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 
-export default function Login() {
+function Login({ onLogin }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      setErrorMsg(error.message);
+    } else {
+      navigate('/feed');
+    }
+  };
+
   return (
     <MDBContainer className="my-5 gradient-form">
-      <MDBRow>
-        <MDBCol col='6' className="mb-5">
-          <div className="d-flex flex-column ms-5">
+      <MDBRow className="justify-content-center">
+        <MDBCol md="6" lg="4">
+          <form onSubmit={handleLogin}>
+            <h2 className="text-center mb-4">Login</h2>
 
-            <div className="text-center">
-              <img
-                src="/paw-icon.png"
-                style={{ width: '185px' }}
-                alt="logo"
-              />
-              <h4 className="mt-1 mb-5 pb-1">PawPal</h4>
-            </div>
+            <MDBInput
+              label="Email"
+              id="email"
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              required
+              wrapperClass="mb-4"
+            />
 
-            <p>Please login to your account</p>
+            <MDBInput
+              label="Password"
+              id="password"
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              required
+              wrapperClass="mb-4"
+            />
 
-            <MDBInput wrapperClass='mb-4' label='Email address' id='form1' type='email' />
-            <MDBInput wrapperClass='mb-4' label='Password' id='form2' type='password' />
+            {errorMsg && <p className="text-danger">{errorMsg}</p>}
 
-            <div className="text-center pt-1 mb-5 pb-1">
-              <MDBBtn className="mb-4 w-100 gradient-custom text-dark">Sign in</MDBBtn>
-              <a className="text-muted" href="#!">Forgot password?</a>
-            </div>
-
-            <div className="d-flex flex-row align-items-center justify-content-center pb-4 mb-4">
-              <p className="mb-0">Don't have an account?</p>
-              <MDBBtn outline className='mx-2' color='secondary'>
-                Register
-              </MDBBtn>
-            </div>
-
-          </div>
-        </MDBCol>
-
-        <MDBCol col='6' className="mb-5">
-          <div className="d-flex flex-column justify-content-center gradient-custom h-100 mb-4">
-            <div className="text-dark px-3 py-4 p-md-5 mx-md-4">
-              <h4 className="mb-4">We are more than just an app</h4>
-              <p className="small mb-0">
-                Welcome to our platform where we strive to provide engagement, connection, and support amoung our communities. Our team is dedicated to creating a space where you can thrive, contribute, and gconnect. Join us in building a community that values connection and service.
-              </p>
-            </div>
-          </div>
+            <MDBBtn type="submit" className="w-100 mb-4" color="primary">
+              Log In
+            </MDBBtn>
+          </form>
         </MDBCol>
       </MDBRow>
     </MDBContainer>
   );
 }
+
+export default Login;
+
