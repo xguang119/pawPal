@@ -28,8 +28,9 @@ function Login({ onLogin }) {
 
   return (
     <MDBContainer className="my-5 gradient-form">
-      <MDBRow className="justify-content-center">
-        <MDBCol md="6" lg="4">
+      <MDBRow>
+        {/* Left column: login form */}
+        <MDBCol md="6" lg="5" className="mb-5">
           <form onSubmit={handleLogin}>
             <h2 className="text-center mb-4">Login</h2>
 
@@ -59,6 +60,23 @@ function Login({ onLogin }) {
               Log In
             </MDBBtn>
           </form>
+        </MDBCol>
+
+        {/* Right column: mission statement + buttons */}
+        <MDBCol md="6" lg="5" className="mb-5">
+          <div className="d-flex flex-column justify-content-center gradient-custom h-100 mb-4 px-4 py-4 rounded shadow-3">
+            <div className="text-dark mb-4">
+              <h4 className="mb-4">We are more than just an app</h4>
+              <p className="small mb-4">
+                Welcome to our platform where we strive to provide engagement, connection, and support among our communities. Our team is dedicated to creating a space where you can thrive, contribute, and connect. Join us in building a community that values connection and service.
+              </p>
+              <div className="d-flex flex-wrap gap-3">
+                <MDBBtn color="primary" outline>Learn More</MDBBtn>
+                <MDBBtn color="success" outline>Get Started</MDBBtn>
+                <MDBBtn color="info" outline>Contact Us</MDBBtn>
+              </div>
+            </div>
+          </div>
         </MDBCol>
       </MDBRow>
     </MDBContainer>
