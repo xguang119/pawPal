@@ -86,6 +86,7 @@ export default function Feed() {
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
         <button onClick={() => navigate('/request')}>Post a New Request</button>
         <button onClick={() => navigate('/profile')}>Go to Profile</button>
+        <button onClick={() => navigate('/lostfound')}>Lost and Found</button>
       </div>
 
       {/* Filter Controls */}
