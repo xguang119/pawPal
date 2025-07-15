@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
 import { useNavigate } from "react-router-dom";
+import { sendAcceptanceEmail } from './sendEmail';
+
 
 export default function Feed() {
   const [posts, setPosts] = useState([]);
@@ -66,6 +68,7 @@ export default function Feed() {
         .from('requests')
         .update({ status: 'Accepted by helper', helper: username })
         .eq('id', post.id);
+        await sendAcceptanceEmail(post); //send email
     }
 
     fetchPosts();
