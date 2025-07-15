@@ -1,33 +1,126 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import RequestForm from "./RequestForm";
-import Login from "./login";
 import { useEffect, useState } from "react";
-import { supabase } from './supabaseClient';
+import { supabase } from "./supabaseClient";
+
+import Login from "./login";
+import Feed from "./feed";
+import PostRequest from "./PostRequest";
+import Profile from "./profile";
+import CompleteProfile from "./Completeprofile";
 
 function App() {
-  //save the user info
   const [user, setUser] = useState(null);
+  const [profileExists, setProfileExists] = useState(null); // null = unknown
   const [checking, setChecking] = useState(true);
 
-  //check if the user login
   useEffect(() => {
-    const checkUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();//get the current user
-      setUser(user);//If there is a logged in user, then save
+    const getSessionAndProfile = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      const currentUser = session?.user || null;
+      setUser(currentUser);
+
+      if (currentUser) {
+        const { data, error } = await supabase
+          .from("profile")
+          .select("*")
+          .eq("id", currentUser.id)
+          .single();
+
+        if (error && error.code !== "PGRST116") {
+          console.error("Error fetching profile:", error.message);
+        }
+
+        setProfileExists(!!data && !error);
+      } else {
+        setProfileExists(false);
+      }
+
       setChecking(false);
     };
-    checkUser();
+
+    getSessionAndProfile();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      getSessionAndProfile();
+    });
+
+    return () => authListener.subscription.unsubscribe();
   }, []);
 
-  if (checking) return <p>Loading...</p>; //avoid blank
+  if (checking) return <p>Loading...</p>;
 
   return (
     <Router>
       <Routes>
-        {/*root path "/": If the user is logged in, display RequestForm*/}
-        <Route path="/" element={user ? <RequestForm /> : <Navigate to="/login" />} />
-        {/*login path "/login": If user is not logged in, display login page*/}
-        <Route path="/login" element={<Login />} />
+        <Route
+          path="/login"
+          element={
+            !user ? (
+              <Login />
+            ) : profileExists ? (
+              <Navigate to="/feed" />
+            ) : (
+              <Navigate to="/complete-profile" />
+            )
+          }
+        />
+
+        <Route
+          path="/complete-profile"
+          element={
+            user && !profileExists ? (
+              <CompleteProfile onComplete={() => setProfileExists(true)} />
+            ) : (
+              <Navigate to="/feed" />
+            )
+          }
+        />
+
+        <Route
+          path="/feed"
+          element={
+            user && profileExists ? (
+              <Feed />
+            ) : user ? (
+              <Navigate to="/complete-profile" />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+
+        <Route
+          path="/request"
+          element={
+            user && profileExists ? (
+              <PostRequest />
+            ) : user ? (
+              <Navigate to="/complete-profile" />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            user && profileExists ? (
+              <Profile />
+            ) : user ? (
+              <Navigate to="/complete-profile" />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+
+        <Route
+          path="*"
+          element={
+            <Navigate to={user ? (profileExists ? "/feed" : "/complete-profile") : "/login"} />
+          }
+        />
       </Routes>
     </Router>
   );
