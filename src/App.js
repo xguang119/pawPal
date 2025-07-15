@@ -7,6 +7,12 @@ import Feed from "./feed";
 import PostRequest from "./PostRequest";
 import Profile from "./profile";
 import CompleteProfile from "./Completeprofile";
+import LostAndFound from "./LostAndFound";
+import LostFoundForm from './LostFoundForm';
+import EditLostFoundForm from './EditLostFoundForm';
+import MyLostFound from './MyLostFound';
+
+
 
 function App() {
   const [user, setUser] = useState(null);
@@ -121,6 +127,58 @@ function App() {
             <Navigate to={user ? (profileExists ? "/feed" : "/complete-profile") : "/login"} />
           }
         />
+
+        <Route
+          path="/lostfound"
+          element={
+            user && profileExists ? (
+              <LostAndFound />
+            ) : user ? (
+              <Navigate to="/complete-profile" />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+
+        <Route
+          path="/lostfoundform"
+          element={
+            user && profileExists ? (
+              <LostFoundForm />
+            ) : user ? (
+              <Navigate to="/complete-profile" />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+        <Route
+          path="/editlostfound/:id"
+          element={
+            user && profileExists ? (
+              <EditLostFoundForm />
+            ) : user ? (
+              <Navigate to="/complete-profile" />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+        <Route
+          path="/mylostfound"
+          element={
+            user && profileExists ? (
+              <MyLostFound />
+            ) : user ? (
+              <Navigate to="/complete-profile" />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+
+
       </Routes>
     </Router>
   );
