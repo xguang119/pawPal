@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { supabase } from './supabaseClient';
+import { useNavigate } from 'react-router-dom';
 import {
   MDBBtn,
   MDBContainer,
@@ -6,9 +8,24 @@ import {
   MDBCol,
   MDBInput
 } from 'mdb-react-ui-kit';
-import './App.css'; 
+import './App.css';
 
 export default function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      setErrorMsg(error.message);
+    } else {
+      navigate('/feed');
+    }
+  };
+
   return (
     <MDBContainer className="my-5 gradient-form">
       <MDBRow>
@@ -17,22 +34,44 @@ export default function Login() {
 
             <div className="text-center">
               <img
-                src="/paw-icon.png"
-                style={{ width: '185px' }}
+                src="PastelLogo.png"
+                style={{ width: '285px' }}
                 alt="logo"
               />
-              <h4 className="mt-1 mb-5 pb-1">PawPal</h4>
+              <h4 className="logo-title mt-1 mb-5 pb-1-1 mb-5 pb-1">PawPal</h4>
             </div>
 
             <p>Please login to your account</p>
 
-            <MDBInput wrapperClass='mb-4' label='Email address' id='form1' type='email' />
-            <MDBInput wrapperClass='mb-4' label='Password' id='form2' type='password' />
+            <form onSubmit={handleLogin}>
+              <MDBInput
+                wrapperClass='mb-4'
+                label='Email address'
+                id='form1'
+                type='email'
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <MDBInput
+                wrapperClass='mb-4'
+                label='Password'
+                id='form2'
+                type='password'
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
 
-            <div className="text-center pt-1 mb-5 pb-1">
-              <MDBBtn className="mb-4 w-100 gradient-custom text-dark">Sign in</MDBBtn>
-              <a className="text-muted" href="#!">Forgot password?</a>
-            </div>
+              {errorMsg && <p className="text-danger">{errorMsg}</p>}
+
+              <div className="text-center pt-1 mb-5 pb-1">
+                <MDBBtn type="submit" className="mb-4 w-100 gradient-custom text-dark">
+                  Sign in
+                </MDBBtn>
+                <a className="text-muted" href="#!">Forgot password?</a>
+              </div>
+            </form>
 
             <div className="d-flex flex-row align-items-center justify-content-center pb-4 mb-4">
               <p className="mb-0">Don't have an account?</p>
@@ -49,7 +88,7 @@ export default function Login() {
             <div className="text-dark px-3 py-4 p-md-5 mx-md-4">
               <h4 className="mb-4">We are more than just an app</h4>
               <p className="small mb-0">
-                Welcome to our platform where we strive to provide engagement, connection, and support amoung our communities. Our team is dedicated to creating a space where you can thrive, contribute, and gconnect. Join us in building a community that values connection and service.
+                Welcome to our platform where we strive to provide engagement, connection, and support among our communities. Our team is dedicated to creating a space where you can thrive, contribute, and connect. Join us in building a community that values connection and service.
               </p>
             </div>
           </div>
