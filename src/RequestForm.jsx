@@ -89,7 +89,7 @@ export default function PostForm(){
             time,
             image_url: imageUrl, 
             status : 'pending',
-            username: username 
+            username: username,
         }]);
         //if error, print post fail
         if (insertError) {

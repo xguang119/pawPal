@@ -7,6 +7,9 @@ export default function Feed() {
   const [username, setUsername] = useState('');
   const [filter, setFilter] = useState('all');
   const navigate = useNavigate();
+  const [filterByCity, setFilterByCity] = useState(false);//controls whether to filter requests by city
+  const [userLocation, setUserLocation] = useState('');//user location info
+
 
   // Fetch posts
   useEffect(() => {
@@ -25,7 +28,19 @@ export default function Feed() {
 
   const fetchUser = async () => {
     const { data: { user } } = await supabase.auth.getUser();
-    if (user) setUsername(user.email);
+    if (user) {
+      setUsername(user.email);
+  
+      const { data, error } = await supabase
+        .from('profile')
+        .select('location')
+        .eq('email', user.email)
+        .single();
+  
+      if (!error && data?.location) {
+        setUserLocation(data.location);
+      }
+    }
   };
 
   const handleStatusChange = async (post) => {
@@ -57,6 +72,8 @@ export default function Feed() {
   };
 
   const filteredPosts = posts.filter(post => {
+    //try to ignore the case
+    if (filterByCity &&  post.location?.toLowerCase() !== userLocation?.toLowerCase() ) return false;
     if (filter === 'all') return true;
     if (filter === 'pending') return post.status === 'pending';
     if (filter === 'mine') return post.username === username;
@@ -84,6 +101,20 @@ export default function Feed() {
           <option value ="Daycare">Daycare</option>
         </select>
       </div>
+
+      {/* city filter */}
+      <div style={{ marginTop: '0.5rem' }}>
+        <label>
+          <input
+            type="checkbox"
+            checked={filterByCity}
+            onChange={(e) => setFilterByCity(e.target.checked)}
+          />
+          {/* the location in () is your location */}
+          {' '}Only show requests in my city ({userLocation || 'loading...'})
+        </label>
+      </div>
+
       
 
       <h2>Recent Requests</h2>
