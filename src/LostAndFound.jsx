@@ -57,7 +57,15 @@ export default function LostAndFound() {
         (!filter || post.pet_type.toLowerCase() === filter.toLowerCase()) &&
         (!statusFilter || post.status.toLowerCase() === statusFilter.toLowerCase())
     )
-    .sort((a, b) => a.status === 'Found' ? 1 : -1);
+    .sort((a, b) => {
+      // 1. Put LOST before FOUND
+      if (a.status === 'Found' && b.status !== 'Found') return 1;
+      if (a.status !== 'Found' && b.status === 'Found') return -1;
+
+      // 2. Within same status, sort by newest first
+      return new Date(b.created_at) - new Date(a.created_at);
+    });
+
 
   return (
     <div style={{ maxWidth: '650px', margin: '40px auto' }}>
