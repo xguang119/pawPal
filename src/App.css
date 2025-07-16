@@ -47,17 +47,37 @@
   background: linear-gradient(to right, rgba(216, 237, 255, 0.8), rgba(228, 207, 255, 0.8));
 }
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 h2, h4 {
-  font-weight: 600;
+  font-weight: 900;
+  font-size: 45px;
 }
 
 p, input, label, button {
-  font-weight: 900;
-  font-family: 'Inter', sans-serif;
+  font-weight: 200;
+  font-family: 'Poppins', sans-serif;
 }
 .logo-title {
   font-size: 2.5rem;   /* Or larger like 2.5rem if needed */
   font-weight: 700;  /* Bold */
+  font-size: 5rem;
+  color: rgb(107, 214, 203); /* Match the color of the logo */
+}
+
+.description-heading {
+  font-size: 2.5rem; /* You can increase to 2.5rem if needed */
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.description-text {
+  font-size: 1.5rem; /* Try 1.5rem for larger */
+  font-weight: 400;
+  line-height: 1.6; /* Optional: adds vertical breathing room */
+}
+
+.description-block {
+  text-align: center;
+  padding: 2rem;
 }

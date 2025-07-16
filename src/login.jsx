@@ -35,10 +35,10 @@ export default function Login() {
             <div className="text-center">
               <img
                 src="PastelLogo.png"
-                style={{ width: '285px' }}
+                style={{ width: '385px' }}
                 alt="logo"
               />
-              <h4 className="logo-title mt-1 mb-5 pb-1-1 mb-5 pb-1">PawPal</h4>
+              <h4 className="logo-title mt-1 mb-5 pb-1-1 mb-5 pb-1">pawPal</h4>
             </div>
 
             <p>Please login to your account</p>
@@ -85,9 +85,9 @@ export default function Login() {
 
         <MDBCol col='6' className="mb-5">
           <div className="d-flex flex-column justify-content-center gradient-custom h-100 mb-4">
-            <div className="text-dark px-3 py-4 p-md-5 mx-md-4">
+            <div className="description-block text-dark px-3 py-4 p-md-5 mx-md-4">
               <h4 className="mb-4">We are more than just an app</h4>
-              <p className="small mb-0">
+              <p className="description-text mb-0">
                 Welcome to our platform where we strive to provide engagement, connection, and support among our communities. Our team is dedicated to creating a space where you can thrive, contribute, and connect. Join us in building a community that values connection and service.
               </p>
             </div>
