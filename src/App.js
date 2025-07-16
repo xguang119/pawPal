@@ -11,6 +11,10 @@ import LostAndFound from "./LostAndFound";
 import LostFoundForm from './LostFoundForm';
 import EditLostFoundForm from './EditLostFoundForm';
 import MyLostFound from './MyLostFound';
+import Meetups from './Meetups';
+import MeetupForm from './MeetupForm';
+import EditMeetupForm from './EditMeetupForm';
+
 
 
 
@@ -170,6 +174,42 @@ function App() {
           element={
             user && profileExists ? (
               <MyLostFound />
+            ) : user ? (
+              <Navigate to="/complete-profile" />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+        <Route
+          path="/meetups"
+          element={
+            user && profileExists ? (
+              <Meetups />
+            ) : user ? (
+              <Navigate to="/complete-profile" />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+        <Route
+          path="/meetupform"
+          element={
+            user && profileExists ? (
+              <MeetupForm />
+            ) : user ? (
+              <Navigate to="/complete-profile" />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+        <Route
+          path="/edit-meetup/:id"
+          element={
+            user && profileExists ? (
+              <EditMeetupForm />
             ) : user ? (
               <Navigate to="/complete-profile" />
             ) : (
