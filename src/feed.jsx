@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
 import { useNavigate } from "react-router-dom";
+import './feed.css';
 
 export default function Feed() {
   const [posts, setPosts] = useState([]);
@@ -63,51 +64,92 @@ export default function Feed() {
     return post.service === filter;
   });
 
-  return (
-    <div style={{ maxWidth: '650px', margin: '40px auto' }}>
-      {/* Top Navigation Buttons */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-        <button onClick={() => navigate('/request')}>Post a New Request</button>
-        <button onClick={() => navigate('/profile')}>Go to Profile</button>
-        <button onClick={() => navigate('/lostfound')}>Lost and Found</button>
-      </div>
+  return (  
+    <div className="gradient-custom" style={{ minHeight: '100vh', padding: '2rem 0' }}>
+      <div style={{ 
+        maxWidth: '850px', 
+        margin: '20px auto',
+        backgroundColor: '#fefefe',
+        padding: '2rem',
+        borderRadius: '16px',
+        boxShadow: '0 6px 24px rgba(0, 0, 0, 0.12)',
+        fontFamily: 'Arial, sans-serif'
+      }}>
+        {/* Top Navigation Buttons */}
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            marginBottom: '1.5rem',
+            flexWrap: 'wrap',
+            gap: '10px'
+          }}>
+          <button className="pastel-button" onClick={() => navigate('/request')}>Post a New Request</button>
+          <button className="pastel-button" onClick={() => navigate('/profile')}>Go to Profile</button>
+          <button className="pastel-button" onClick={() => navigate('/lostfound')}>Lost and Found</button>
+        </div>
 
-      {/* Filter Controls */}
-      <div style = {{marginBottom: '1rem' }}>
-        <label>Filter: </label>
-        <select value = {filter} onChange={(e) => setFilter(e.target.value)}>
-          <option value ="all">Show All</option>
-          <option value ="pending">Pending</option>
-          <option value ="mine">My Posts</option>
-          <option value ="Dog walking">Dog walking</option>
-          <option value ="Vaccinations">Vaccinations</option>
-          <option value ="Grooming">Grooming</option>
-          <option value ="Daycare">Daycare</option>
-        </select>
-      </div>
+        {/* Filter Controls */}
+        <div style = {{marginLeft: 'auto'}}>
+          <label style={{marginRight: '0.5rem'}}>Filter: </label>
+          <select
+           className="pastel-select"
+           value = {filter} 
+            onChange={(e) => setFilter(e.target.value)}
+          >
+           <option value ="all">Show All</option>
+           <option value ="pending">Pending</option>
+           <option value ="mine">My Posts</option>
+           <option value ="Dog walking">Dog walking</option>
+            <option value ="Vaccinations">Vaccinations</option>
+            <option value ="Grooming">Grooming</option>
+           <option value ="Daycare">Daycare</option>
+          </select>
+        </div>
       
 
-      <h2>Recent Requests</h2>
+        <h2 style={{ color: '#58bfbc', fontSize: '3.75rem', textAlign: 'center' }}>Community Requests</h2>
 
-      {filteredPosts.length === 0 && <p>No matching requests found.</p>}
-      {filteredPosts.map((post) => (
-        <div key={post.id} style={{ border: '1px solid #ccc', padding: '12px', marginBottom: '12px' }}>
-          {post.image_url && <img src={post.image_url} alt="Request" style={{ width: '100%', marginBottom: '8px' }} />}
-          <p><strong>{post.service}</strong> · {post.date} {post.time}</p>
-          <p>{post.description}</p>
-          <p>Contact ({post.contact_type}): {post.contact}</p>
-          <p>Status: {post.status === 'pending' ? 'Not accepted yet' : 'Accepted'}</p>
-          <p>Posted by: {post.username || 'Unknown'}</p>
-          {post.helper && <p style={{ fontSize: '0.8em', color: '#007700' }}>Accepted by: {post.helper}</p>}
-          <button onClick={() => handleStatusChange(post)} style={{ marginTop: '0.5rem' }}>
-            {
-              post.status === 'Accepted by helper'
-                ? 'Cancel'
-                : (post.username !== username ? 'Accept' : 'Waiting...')
-            }
-          </button>
-        </div>
-      ))}
+        {filteredPosts.length === 0 && <p>No matching requests found.</p>}
+             {/* Posts UI */}
+        {filteredPosts.map((post) => (
+          <div 
+            key={post.id} 
+            style={{ 
+              border: '1px solid #e0e0e0',
+              backgroundColor: '#f6efdb', 
+              padding: '16px',
+             borderRadius: '12px', 
+             marginBottom: '20px',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.05)'
+            }}
+           >
+           {post.image_url && (
+             <img 
+               src={post.image_url} 
+               alt="Request" 
+               style={{ width: '100%',borderRadius: '8px', marginBottom: '12px' }} 
+             />
+           )}
+
+           <p><strong>{post.service}</strong> · {post.date} {post.time}</p>
+           <p>{post.description}</p>
+           <p>Contact ({post.contact_type}): {post.contact}</p>
+           <p>Status: {post.status === 'pending' ? 'Not accepted yet' : 'Accepted'}</p>
+           <p>Posted by: {post.username || 'Unknown'}</p>
+           {post.helper && <p style={{ fontSize: '0.85em', color: '#4CAF50' }}>Accepted by: {post.helper}</p>}
+           <button 
+             className="pastel-button"
+             onClick={() => handleStatusChange(post)} 
+             style={{ marginTop: '0.5rem' }}>
+             {
+               post.status === 'Accepted by helper'
+                 ? 'Cancel'
+                 : (post.username !== username ? 'Accept' : 'Waiting...')
+             }
+           </button>
+         </div>
+       ))}
+     </div>
     </div>
   );
 }
