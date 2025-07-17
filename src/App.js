@@ -1,8 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "./supabaseClient";
+import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 
-import Login from "./login";
+import Login from "./login.jsx";
 import Feed from "./feed";
 import PostRequest from "./PostRequest";
 import Profile from "./profile";
@@ -11,6 +12,7 @@ import LostAndFound from "./LostAndFound";
 import LostFoundForm from './LostFoundForm';
 import EditLostFoundForm from './EditLostFoundForm';
 import MyLostFound from './MyLostFound';
+
 
 
 

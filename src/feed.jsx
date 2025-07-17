@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { supabase } from "./supabaseClient";
 import { useNavigate } from "react-router-dom";
 import { sendAcceptanceEmail } from './sendEmail';
+import ReviewForm from './ReviewForm';
+
 
 
 export default function Feed() {
@@ -11,12 +13,19 @@ export default function Feed() {
   const navigate = useNavigate();
   const [filterByCity, setFilterByCity] = useState(false);//controls whether to filter requests by city
   const [userLocation, setUserLocation] = useState('');//user location info
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [helperRatings, setHelperRatings] = useState({});
+  const [helperReviews, setHelperReviews] = useState({});
+
+
 
 
   // Fetch posts
   useEffect(() => {
     fetchPosts();
     fetchUser();
+    fetchHelperRatings();
   }, []);
 
   const fetchPosts = async () => {
@@ -48,6 +57,21 @@ export default function Feed() {
   const handleStatusChange = async (post) => {
     // If you're the poster and someone accepted → cancel
     if (post.username === username && post.status === 'Accepted by helper') {
+      const { data: reviews, error } = await supabase
+      .from('reviews')
+      .select('*')
+      .eq('request_id', post.id);
+
+    if (error) {
+      console.error('Error checking review:', error);
+      return;
+    }
+
+    if (reviews && reviews.length > 0) {
+      alert("You have already reviewed this helper. You can't cancel this task.");
+      return;
+    }
+
       await supabase
         .from('requests')
         .update({ status: 'pending', helper: null })
@@ -82,6 +106,47 @@ export default function Feed() {
     if (filter === 'mine') return post.username === username;
     return post.service === filter;
   });
+
+  const fetchHelperRatings = async () => {
+    const { data, error } = await supabase
+      .from('reviews')
+      .select('helper_email, rating, comment, request_id');
+  
+    if (error) {
+      console.error('Rating fetch error:', error);
+      return;
+    }
+  
+    const ratingMap = {};
+    const reviewMap = {};
+  
+    data.forEach(({ helper_email, rating, comment, request_id }) => {
+
+      if (!ratingMap[helper_email]) {
+        ratingMap[helper_email] = { total: 0, count: 0 };
+      }
+      ratingMap[helper_email].total += rating;
+      ratingMap[helper_email].count += 1;
+
+      if (!reviewMap[request_id]) {
+        reviewMap[request_id] = [];
+      }
+      reviewMap[request_id].push({ rating, comment });
+    });
+    
+  
+    const avgMap = {};
+    for (const email in ratingMap) {
+      const { total, count } = ratingMap[email];
+      avgMap[email] = {
+        average: (total / count).toFixed(1),
+        count
+      };
+    }
+  
+    setHelperRatings(avgMap);
+    setHelperReviews(reviewMap);
+  };
 
   return (
     <div style={{ maxWidth: '650px', margin: '40px auto' }}>
@@ -132,7 +197,31 @@ export default function Feed() {
           <p>Contact ({post.contact_type}): {post.contact}</p>
           <p>Status: {post.status === 'pending' ? 'Not accepted yet' : 'Accepted'}</p>
           <p>Posted by: {post.username || 'Unknown'}</p>
-          {post.helper && <p style={{ fontSize: '0.8em', color: '#007700' }}>Accepted by: {post.helper}</p>}
+          {post.helper && (
+            <div>
+              <p style={{ fontSize: '0.8em', color: '#007700' }}>
+                Accepted by: {post.helper}
+                {helperRatings[post.helper] && (
+                  <span style={{ marginLeft: '8px', color: '#555' }}>
+                    ❤️ {helperRatings[post.helper].average} / 5 ({helperRatings[post.helper].count})
+                  </span>
+                )}
+              </p>
+              {helperReviews[post.id] && (
+              <div style={{ marginLeft: '10px', fontSize: '0.8em', color: '#444' }}>
+                <strong>📝Review:</strong>
+                <ul style={{ paddingLeft: '16px', marginTop: '4px' }}>
+                  {helperReviews[post.id].map((r, idx) => (
+                    <li key={idx}>❤️ {r.rating} – {r.comment || 'No comment'}</li>
+                  ))}
+               </ul>
+              </div>
+            )}
+
+            </div>
+          )}
+
+
           <button onClick={() => handleStatusChange(post)} style={{ marginTop: '0.5rem' }}>
             {
               post.status === 'Accepted by helper'
@@ -140,8 +229,30 @@ export default function Feed() {
                 : (post.username !== username ? 'Accept' : 'Waiting...')
             }
           </button>
+          {post.username === username && post.status === 'Accepted by helper' && (
+            <button
+              onClick={() => {
+                setSelectedPost(post);
+                setShowReviewForm(true);
+              }}
+              style={{ marginTop: '8px' }}
+            >
+              Rate Helper
+            </button>
+          )}
         </div>
       ))}
+      {showReviewForm && selectedPost && (
+        <ReviewForm
+        requestId={selectedPost.id}
+          helperId={selectedPost.helper}
+          onClose={() => {
+            setShowReviewForm(false);
+            setSelectedPost(null);
+          }}
+        />
+      )}
+
     </div>
   );
 }
