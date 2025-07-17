@@ -18,15 +18,17 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
       setErrorMsg(error.message);
     } else {
+      // Login successful — navigate will redirect based on App.jsx logic
       navigate('/feed');
     }
   };
 
   return (
+
     <MDBContainer className="my-5 gradient-form">
       <MDBRow>
         <MDBCol col='6' className="mb-5">
