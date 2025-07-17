@@ -64,9 +64,19 @@ export default function Meetups() {
 
   const filteredMeetups = meetups.filter((post) => {
     if (!filter) return true;
-    if (filter === 'MyPosts' && user) return post.user_id === user.id;
+  
+    if (filter === 'MyPosts' && user) {
+      return post.user_id === user.id;
+    }
+  
+    if (filter === 'Other') {
+      const mainTypes = ['dog', 'cat', 'bird'];
+      return !mainTypes.includes(post.pet_type.toLowerCase());
+    }
+  
     return post.pet_type.toLowerCase() === filter.toLowerCase();
   });
+  
 
   return (
     <div style={{ maxWidth: '650px', margin: '40px auto' }}>
