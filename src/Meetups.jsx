@@ -114,9 +114,11 @@ export default function Meetups() {
               Posted on: {new Date(meetup.created_at).toLocaleString()}
             </p>
 
-            <button onClick={() => toggleInterest(meetup.id, meetup.interested)}>
-              {isInterested ? 'Un-RSVP' : 'RSVP'}
-            </button>
+            {user && (
+              <button onClick={() => toggleInterest(meetup.id, meetup.interested)}>
+                {isInterested ? 'Un-RSVP' : 'RSVP'}
+              </button>
+            )}
 
             {user && meetup.user_id === user.id && (
               <>

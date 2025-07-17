@@ -109,15 +109,15 @@ const EditMeetupForm = () => {
         </label>
 
         <label>
-          Pet Type:
-          <select value={petType} onChange={(e) => setPetType(e.target.value)} required>
-            <option value="">Select</option>
-            <option value="Dog">Dog</option>
-            <option value="Cat">Cat</option>
-            <option value="Bird">Bird</option>
-            <option value="My Post">My Post</option>
-          </select>
+        Pet Type:
+        <input
+            type="text"
+            value={petType}
+            onChange={(e) => setPetType(e.target.value)}
+            required
+        />
         </label>
+
 
         <label>
           Upload New Photo (optional):
