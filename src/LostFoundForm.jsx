@@ -77,10 +77,7 @@ export default function LostFoundForm() {
       <select value={status} onChange={(e) => setStatus(e.target.value)} required>
         <option>Lost</option>
         <option>Found</option>
-<<<<<<< HEAD
-=======
         <option>Reunited</option>
->>>>>>> main
       </select>
       <br /><br />
 
@@ -101,11 +98,7 @@ export default function LostFoundForm() {
         type="text"
         value={contact}
         onChange={(e) => setContact(e.target.value)}
-<<<<<<< HEAD
-        placeholder="email, phone, etc."
-=======
         placeholder= "email, phone, etc."
->>>>>>> main
         required
       />
       <br /><br />

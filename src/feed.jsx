@@ -5,7 +5,6 @@ import { sendAcceptanceEmail } from './sendEmail';
 import ReviewForm from './ReviewForm';
 
 
-
 export default function Feed() {
   const [posts, setPosts] = useState([]);
   const [username, setUsername] = useState('');
@@ -17,8 +16,6 @@ export default function Feed() {
   const [selectedPost, setSelectedPost] = useState(null);
   const [helperRatings, setHelperRatings] = useState({});
   const [helperReviews, setHelperReviews] = useState({});
-
-
 
 
   // Fetch posts
@@ -53,6 +50,7 @@ export default function Feed() {
       }
     }
   };
+
 
   const handleStatusChange = async (post) => {
     // If you're the poster and someone accepted → cancel
@@ -99,7 +97,6 @@ export default function Feed() {
   };
 
   const filteredPosts = posts.filter(post => {
-    //try to ignore the case
     if (filterByCity &&  post.location?.toLowerCase() !== userLocation?.toLowerCase() ) return false;
     if (filter === 'all') return true;
     if (filter === 'pending') return post.status === 'pending';
@@ -133,8 +130,6 @@ export default function Feed() {
       }
       reviewMap[request_id].push({ rating, comment });
     });
-    
-  
     const avgMap = {};
     for (const email in ratingMap) {
       const { total, count } = ratingMap[email];
@@ -155,10 +150,7 @@ export default function Feed() {
         <button onClick={() => navigate('/request')}>Post a New Request</button>
         <button onClick={() => navigate('/profile')}>Go to Profile</button>
         <button onClick={() => navigate('/lostfound')}>Lost and Found</button>
-<<<<<<< HEAD
-=======
         <button onClick={() => navigate('/meetups')}>Find Pet Meetups</button>
->>>>>>> main
       </div>
 
       {/* Filter Controls */}
@@ -187,7 +179,6 @@ export default function Feed() {
           {' '}Only show requests in my city ({userLocation || 'loading...'})
         </label>
       </div>
-
       
 
       <h2>Recent Requests</h2>

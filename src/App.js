@@ -3,10 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "./supabaseClient";
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 
-<<<<<<< HEAD
-=======
 
->>>>>>> main
 import Login from "./login.jsx";
 import Feed from "./feed";
 import PostRequest from "./PostRequest";
@@ -16,13 +13,10 @@ import LostAndFound from "./LostAndFound";
 import LostFoundForm from './LostFoundForm';
 import EditLostFoundForm from './EditLostFoundForm';
 import MyLostFound from './MyLostFound';
-<<<<<<< HEAD
-=======
 import Meetups from './Meetups';
 import MeetupForm from './MeetupForm';
 import EditMeetupForm from './EditMeetupForm';
 
->>>>>>> main
 
 
 
@@ -190,8 +184,6 @@ function App() {
             )
           }
         />
-<<<<<<< HEAD
-=======
         <Route
           path="/meetups"
           element={
@@ -228,7 +220,6 @@ function App() {
             )
           }
         />
->>>>>>> main
 
 
       </Routes>
