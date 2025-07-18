@@ -52,19 +52,28 @@ export default function LostAndFound() {
   };
 
   const filteredPosts = posts
-    .filter(
-      (post) =>
-        (!filter || post.pet_type.toLowerCase() === filter.toLowerCase()) &&
-        (!statusFilter || post.status.toLowerCase() === statusFilter.toLowerCase())
-    )
-    .sort((a, b) => {
-      // 1. Put LOST before FOUND
-      if (a.status === 'Found' && b.status !== 'Found') return 1;
-      if (a.status !== 'Found' && b.status === 'Found') return -1;
+    .filter((post) => {
+      const pet = post.pet_type.toLowerCase();
+      const status = post.status.toLowerCase();
 
-      // 2. Within same status, sort by newest first
-      return new Date(b.created_at) - new Date(a.created_at);
-    });
+      const matchesFilter =
+        !filter ||
+        (filter.toLowerCase() === 'other'
+          ? pet !== 'dog' && pet !== 'cat' && pet !== 'bird'
+          : pet === filter.toLowerCase());
+
+      const matchesStatus = !statusFilter || status === statusFilter.toLowerCase();
+
+      return matchesFilter && matchesStatus;
+    })
+
+  const sortedPosts = [...filteredPosts]
+    .filter(post => post.status !== 'Reunited')
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    .concat(filteredPosts.filter(post => post.status === 'Reunited'));
+
+   
+
 
 
   return (
@@ -100,7 +109,7 @@ export default function LostAndFound() {
       </div>
 
       {filteredPosts.length === 0 && <p>No matching lost/found posts found.</p>}
-      {filteredPosts.map((post) => (
+      {sortedPosts.map((post) => (
         <div key={post.id} style={{ border: '1px solid #ccc', padding: '12px', marginBottom: '12px' }}>
           {post.image_url && (
             <img
@@ -109,7 +118,7 @@ export default function LostAndFound() {
               style={{ width: '100%', marginBottom: '8px' }}
             />
           )}
-          <p style={{ color: post.status === 'Found' ? 'green' : 'red', fontWeight: 'bold' }}>
+          <p style={{ color: post.status === 'Reunited' ? 'green' : 'red', fontWeight: 'bold' }}>
             {post.status} - {post.pet_type}
           </p>
           <p><em>Last seen at:</em> {post.location}</p>
