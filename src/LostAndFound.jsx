@@ -52,6 +52,7 @@ export default function LostAndFound() {
   };
 
   const filteredPosts = posts
+<<<<<<< HEAD
     .filter(
       (post) =>
         (!filter || post.pet_type.toLowerCase() === filter.toLowerCase()) &&
@@ -65,6 +66,30 @@ export default function LostAndFound() {
       // 2. Within same status, sort by newest first
       return new Date(b.created_at) - new Date(a.created_at);
     });
+=======
+    .filter((post) => {
+      const pet = post.pet_type.toLowerCase();
+      const status = post.status.toLowerCase();
+
+      const matchesFilter =
+        !filter ||
+        (filter.toLowerCase() === 'other'
+          ? pet !== 'dog' && pet !== 'cat' && pet !== 'bird'
+          : pet === filter.toLowerCase());
+
+      const matchesStatus = !statusFilter || status === statusFilter.toLowerCase();
+
+      return matchesFilter && matchesStatus;
+    })
+
+  const sortedPosts = [...filteredPosts]
+    .filter(post => post.status !== 'Reunited')
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    .concat(filteredPosts.filter(post => post.status === 'Reunited'));
+
+   
+
+>>>>>>> main
 
 
   return (
@@ -100,7 +125,11 @@ export default function LostAndFound() {
       </div>
 
       {filteredPosts.length === 0 && <p>No matching lost/found posts found.</p>}
+<<<<<<< HEAD
       {filteredPosts.map((post) => (
+=======
+      {sortedPosts.map((post) => (
+>>>>>>> main
         <div key={post.id} style={{ border: '1px solid #ccc', padding: '12px', marginBottom: '12px' }}>
           {post.image_url && (
             <img
@@ -109,7 +138,11 @@ export default function LostAndFound() {
               style={{ width: '100%', marginBottom: '8px' }}
             />
           )}
+<<<<<<< HEAD
           <p style={{ color: post.status === 'Found' ? 'green' : 'red', fontWeight: 'bold' }}>
+=======
+          <p style={{ color: post.status === 'Reunited' ? 'green' : 'red', fontWeight: 'bold' }}>
+>>>>>>> main
             {post.status} - {post.pet_type}
           </p>
           <p><em>Last seen at:</em> {post.location}</p>
@@ -137,4 +170,8 @@ export default function LostAndFound() {
       ))}
     </div>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> main

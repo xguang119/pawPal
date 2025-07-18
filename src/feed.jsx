@@ -155,6 +155,10 @@ export default function Feed() {
         <button onClick={() => navigate('/request')}>Post a New Request</button>
         <button onClick={() => navigate('/profile')}>Go to Profile</button>
         <button onClick={() => navigate('/lostfound')}>Lost and Found</button>
+<<<<<<< HEAD
+=======
+        <button onClick={() => navigate('/meetups')}>Find Pet Meetups</button>
+>>>>>>> main
       </div>
 
       {/* Filter Controls */}

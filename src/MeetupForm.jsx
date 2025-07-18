@@ -2,21 +2,25 @@ import { useState, useEffect, useRef } from 'react';
 import { supabase } from './supabaseClient';
 import { useNavigate } from 'react-router-dom';
 
-export default function LostFoundForm() {
-  const [petType, setPetType] = useState('');
-  const [status, setStatus] = useState('Lost');
-  const [location, setLocation] = useState('');
+export default function MeetupForm() {
+  const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [contact, setContact] = useState('');
-  const [username, setUsername] = useState('');
+  const [location, setLocation] = useState('');
+  const [datetime, setDatetime] = useState('');
+  const [petType, setPetType] = useState('');
   const [image, setImage] = useState(null);
+  const [username, setUsername] = useState('');
+  const [userId, setUserId] = useState('');
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (user) setUsername(user.email);
+      if (user) {
+        setUsername(user.email);
+        setUserId(user.id);
+      }
     };
     fetchUser();
   }, []);
@@ -29,7 +33,7 @@ export default function LostFoundForm() {
     if (image) {
       const { data, error } = await supabase.storage
         .from('image')
-        .upload(`lostfound/${Date.now()}-${image.name}`, image);
+        .upload(`meetups/${Date.now()}-${image.name}`, image);
 
       if (error) {
         alert('Image upload failed: ' + error.message);
@@ -43,74 +47,60 @@ export default function LostFoundForm() {
       imageUrl = urlData.publicUrl;
     }
 
-    const { error } = await supabase.from('lost_found_posts').insert([
+    const { error } = await supabase.from('meetups_posts').insert([
       {
-        pet_type: petType,
-        status,
-        location,
+        title,
         description,
-        contact,
-        username,
+        location,
+        datetime,
+        pet_type: petType,
         image_url: imageUrl,
+        user_id: userId,          
+        username,                 
+        interested: [],
       },
     ]);
+    
 
     if (error) {
-      alert('Error posting lost/found pet: ' + error.message);
+      alert('Error posting meetup: ' + error.message);
     } else {
-      setPetType('');
-      setStatus('Lost');
-      setLocation('');
+      setTitle('');
       setDescription('');
-      setContact('');
+      setLocation('');
+      setDatetime('');
+      setPetType('');
       setImage(null);
       if (fileInputRef.current) fileInputRef.current.value = null;
-      navigate('/lostfound');
+      navigate('/meetups');
     }
   };
 
   return (
     <form onSubmit={handleSubmit} style={{ maxWidth: '600px', margin: '2rem auto' }}>
-      <h2>Post a Lost/Found Pet</h2>
+      <h2>Post a Pet Meetup</h2>
 
-      <label>Status: </label>
-      <select value={status} onChange={(e) => setStatus(e.target.value)} required>
-        <option>Lost</option>
-        <option>Found</option>
-<<<<<<< HEAD
-=======
-        <option>Reunited</option>
->>>>>>> main
-      </select>
-      <br /><br />
-
-      <label>Pet Type: </label>
-      <input type="text" value={petType} onChange={(e) => setPetType(e.target.value)} required />
-      <br /><br />
-
-      <label>Last Known Location: </label>
-      <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} required />
+      <label>Title: </label>
+      <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
       <br /><br />
 
       <label>Description: </label>
       <textarea value={description} onChange={(e) => setDescription(e.target.value)} required />
       <br /><br />
 
-      <label>Contact Info: </label>
-      <input
-        type="text"
-        value={contact}
-        onChange={(e) => setContact(e.target.value)}
-<<<<<<< HEAD
-        placeholder="email, phone, etc."
-=======
-        placeholder= "email, phone, etc."
->>>>>>> main
-        required
-      />
+      <label>Location: </label>
+      <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} required />
       <br /><br />
 
-      <label>Upload Pet Photo (optional): </label>
+      <label>Date & Time: </label>
+      <input type="datetime-local" value={datetime} onChange={(e) => setDatetime(e.target.value)} required />
+      <br /><br />
+
+      <label>Pet Type: </label>
+      <input type="text" value={petType} onChange={(e) => setPetType(e.target.value)} required />
+      <br /><br />
+
+      <label>Upload Meetup Photo (optional): </label>
       <input
         type="file"
         accept="image/*"
@@ -123,7 +113,7 @@ export default function LostFoundForm() {
         <button type="submit">Submit</button>
         <button
           type="button"
-          onClick={() => navigate('/lostfound')}
+          onClick={() => navigate('/meetups')}
           style={{ marginLeft: '10px', backgroundColor: '#ccc' }}
         >
           Cancel

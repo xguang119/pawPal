@@ -69,6 +69,10 @@ export default function EditLostFoundForm() {
       <select value={status} onChange={(e) => setStatus(e.target.value)} required>
         <option>Lost</option>
         <option>Found</option>
+<<<<<<< HEAD
+=======
+        <option>Reunited</option>
+>>>>>>> main
       </select>
       <br /><br />
 
