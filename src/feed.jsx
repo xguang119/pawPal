@@ -196,11 +196,18 @@ export default function Feed() {
             <div>
               <p style={{ fontSize: '0.8em', color: '#007700' }}>
                 Accepted by: {post.helper}
-                {helperRatings[post.helper] && (
+                {/* if helper has 'rating' */}
+                {helperRatings[post.helper] ? (
                   <span style={{ marginLeft: '8px', color: '#555' }}>
                     ❤️ {helperRatings[post.helper].average} / 5 ({helperRatings[post.helper].count})
                   </span>
-                )}
+                ) : (
+                //else
+                <span style={{ marginLeft: '8px', color: '#999' }}>
+                  No reviews yet
+                </span>
+              )}
+
               </p>
               {helperReviews[post.id] && (
               <div style={{ marginLeft: '10px', fontSize: '0.8em', color: '#444' }}>

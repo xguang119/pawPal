@@ -6,12 +6,30 @@ export default function Profile() {
   const [userEmail, setUserEmail] = useState('');
   const [profile, setProfile] = useState(null);
   const navigate = useNavigate();
+  const [averageRating, setAverageRating] = useState(null);
+  const [reviewCount, setReviewCount] = useState(0);
+
 
   useEffect(() => {
     const fetchUserProfile = async () => {
       const { data: { user }, error } = await supabase.auth.getUser();
       if (user) {
         setUserEmail(user.email);
+        const { data: reviews, error: reviewError } = await supabase
+          .from('reviews')
+          .select('rating')
+          .eq('helper_email', user.email);
+
+        if (reviewError) {
+          console.error('Review fetch error:', reviewError.message);
+        } else if (reviews && reviews.length > 0) {
+          const total = reviews.reduce((sum, r) => sum + r.rating, 0);
+          const avg = (total / reviews.length).toFixed(1);
+          setAverageRating(avg);
+          setReviewCount(reviews.length);
+        }
+
+
 
         const { data: profileData, error: profileError } = await supabase
           .from('profile')
@@ -49,6 +67,15 @@ export default function Profile() {
           <p><strong>Phone:</strong> {profile.phone}</p>
           <p><strong>Location:</strong> {profile.location}</p>
           <p><strong>Pet Type:</strong> {profile['pet type']}</p>
+          <p><strong>Rating:</strong> {
+          reviewCount > 0
+          //show rate and how many reviews
+          ? <>❤️ {averageRating} / 5 ({reviewCount} reviews)</>
+          //if no review
+          : <span style={{ color: '#777' }}>No reviews yet</span>
+        }</p>
+
+
           {profile['profile pic'] && (
             <div style={{ marginTop: '1rem' }}>
               <img
