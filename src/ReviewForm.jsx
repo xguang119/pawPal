@@ -28,16 +28,16 @@ export default function ReviewForm({ requestId, helperId, onClose }) {
     .eq('request_id', requestId)
     .eq('poster_email', posterEmail);
 
-  if (checkError) {
-    console.error('Review check failed:', checkError);
-    setMessage('Failed to check existing review.');
-    return;
-  }
+    if (checkError) {
+      console.error('Review check failed:', checkError);
+      setMessage('Failed to check existing review.');
+      return;
+    }
 
-  if (existingReviews && existingReviews.length > 0) {
-    setMessage('You have already submitted a review for this task.');
+    if (existingReviews && existingReviews.length > 0) {
+      setMessage('You have already submitted a review for this task.');
     return;
-  }
+    }
 
     const { error } = await supabase.from('reviews').insert([
       {

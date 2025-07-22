@@ -16,6 +16,11 @@ export default function Feed() {
   const [selectedPost, setSelectedPost] = useState(null);
   const [helperRatings, setHelperRatings] = useState({});
   const [helperReviews, setHelperReviews] = useState({});
+  //try to seperate pages
+  const [currentPage, setCurrentPage] = useState(1);
+  const postsPerPage = 6;// 6 tasks per page
+
+
 
 
   // Fetch posts
@@ -24,6 +29,16 @@ export default function Feed() {
     fetchUser();
     fetchHelperRatings();
   }, []);
+
+  //start from first page
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filter]);
+
+  //also for city filter
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filterByCity]);
 
   const fetchPosts = async () => {
     const { data, error } = await supabase
@@ -96,6 +111,7 @@ export default function Feed() {
     fetchPosts();
   };
 
+
   const filteredPosts = posts.filter(post => {
     if (filterByCity &&  post.location?.toLowerCase() !== userLocation?.toLowerCase() ) return false;
     if (filter === 'all') return true;
@@ -103,6 +119,12 @@ export default function Feed() {
     if (filter === 'mine') return post.username === username;
     return post.service === filter;
   });
+
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
+  const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
+
 
   const fetchHelperRatings = async () => {
     const { data, error } = await supabase
@@ -184,7 +206,7 @@ export default function Feed() {
       <h2>Recent Requests</h2>
 
       {filteredPosts.length === 0 && <p>No matching requests found.</p>}
-      {filteredPosts.map((post) => (
+      {currentPosts.map((post) => (
         <div key={post.id} style={{ border: '1px solid #ccc', padding: '12px', marginBottom: '12px' }}>
           {post.image_url && <img src={post.image_url} alt="Request" style={{ width: '100%', marginBottom: '8px' }} />}
           <p><strong>{post.service}</strong> · {post.date} {post.time}</p>
@@ -219,8 +241,8 @@ export default function Feed() {
                </ul>
               </div>
             )}
-
             </div>
+            
           )}
 
 
@@ -244,6 +266,48 @@ export default function Feed() {
           )}
         </div>
       ))}
+
+      {/*seperate pages*/}
+      {totalPages > 1 && (
+        <div style={{ textAlign: 'center', marginTop: '24px' }}>
+          <button
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+          style={{ margin: '0 6px' }}
+        >
+          Prev
+        </button>
+        {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+          <button
+            key={page}
+            onClick={() => setCurrentPage(page)}
+            style={{
+              margin: '0 4px',
+              fontWeight: page === currentPage ? 'bold' : 'normal',
+              backgroundColor: page === currentPage ? '#007bff' : '#f0f0f0',
+              color: page === currentPage ? '#fff' : '#000',
+              border: '1px solid #ccc',
+              padding: '6px 12px',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            {page}
+          </button>
+        ))}
+
+
+        <button
+          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+          disabled={currentPage === totalPages}
+          style={{ margin: '0 6px' }}
+        >
+          Next
+        </button>
+      </div>
+    )}
+
+
       {showReviewForm && selectedPost && (
         <ReviewForm
         requestId={selectedPost.id}
