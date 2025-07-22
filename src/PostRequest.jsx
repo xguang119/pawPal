@@ -194,7 +194,7 @@ export default function PostRequest() {
                 </div>
 
                 {/*Submit botton*/}
-                <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
+                <div style={{ textAlign: 'center', marginTop: '1rem' }}>
                  <button type="submit" className="pastel-button post-button">Post</button>
                 </div>
             </form>
