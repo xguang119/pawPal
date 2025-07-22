@@ -53,7 +53,7 @@ export default function Profile() {
         <h2 style={{
           fontSize: '3rem',
           fontWeight: 'bold',
-          color: '#444',
+          color: '#58bfbc',
           marginBottom: '1.5rem'
         }}>Your Profile</h2>
 
