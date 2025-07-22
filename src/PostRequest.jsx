@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { supabase } from './supabaseClient';
 import { useNavigate } from 'react-router-dom';
+import './App.css';
 
 export default function PostRequest() {
   const [service, setService] = useState('');
@@ -83,24 +84,35 @@ export default function PostRequest() {
   };
 
    return (
-        <div style={{
-            maxWidth : '650px', 
-            margin:'40px auto',
+        <div className="gradient-custom" style={{
+            minHeight: '100vh',
+            padding: '2rem 0',
+            //maxWidth : '650px', 
+            //margin:'40px auto',
             }}>
+               <div style={{
+                  maxWidth: '700px',
+                  margin: '0 auto',
+                  backgroundColor: '#f6efdb',
+                  padding: '2rem',
+                  borderRadius: '16px',
+                  boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
+                  fontFamily: 'Arial, sans-serif'
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                     <button className="pastel-button" onClick={backTofeed}>Cancel</button>
+                  </div>
             <h2 style={{
                 fontFamily: 'Arial, sans-serif',
-                fontSize: '32px',
+                fontSize: '3.5rem',
                 fontWeight: 'bold',
-                color: '#333',
+                textAlign: 'center',
+                color: '#444',
                 marginBottom: '24px'}}>
                 Post the Request~
             </h2>
-            <div style={{ display: "flex", justifyContent: "flex-end", padding: "10px" }}>
-                <button onClick={backTofeed}>Cancel</button>
-                </div>
-
             <form onSubmit={submitTask}>
-                {/*What kind of service*/}
+                {/*What kind of service --------- could change*/}
                 <div style={{ marginBottom: '12px' }}>
                 <label>Service Type: </label>
                 <select value={service} onChange={(task)=>setService(task.target.value)}required>
@@ -182,10 +194,12 @@ export default function PostRequest() {
                 </div>
 
                 {/*Submit botton*/}
-                <button type="submit">Post</button>
+                <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
+                 <button type="submit" className="pastel-button post-button">Post</button>
+                </div>
             </form>
             {message && <p>{message}</p>}
-
+          </div>
     </div>
   );
 }

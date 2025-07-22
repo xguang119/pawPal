@@ -81,3 +81,9 @@ p, input, label, button {
   text-align: center;
   padding: 2rem;
 }
+
+.pastel-button.post-button {
+  padding: 10px 32px;      /* wider */
+  font-weight: bold;
+  font-size: 1.5rem;
+}
