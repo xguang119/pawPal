@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from './supabaseClient';
 import { useNavigate } from 'react-router-dom';
+import './App.css';
 
 export default function LostFoundForm() {
   const [petType, setPetType] = useState('');
@@ -70,57 +71,114 @@ export default function LostFoundForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: '600px', margin: '2rem auto' }}>
-      <h2>Post a Lost/Found Pet</h2>
+    <div className="gradient-custom" style={{ minHeight: '100vh', padding: '2rem 0' }}>
+      <div style={{
+        maxWidth: '700px',
+        margin: '0 auto',
+        backgroundColor: '#f6efdb',
+        padding: '2rem',
+        borderRadius: '16px',
+        boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
+        fontFamily: 'Poppins, sans-serif'
+    }}>
+      <h2 style={{
+        fontWeight: 900,
+        fontSize: '3rem',
+        textAlign: 'center',
+        marginBottom: '2rem',
+        color: '#58bfbc'
+      }}>
+        Post a Lost/<span style={{ color: '#58bfbc' }}>Found Pet</span>
+      </h2>
 
-      <label>Status: </label>
-      <select value={status} onChange={(e) => setStatus(e.target.value)} required>
-        <option>Lost</option>
-        <option>Found</option>
-      </select>
-      <br /><br />
+      <form onSubmit={handleSubmit}>
+        {/* Status */}
+        <div style={{ marginBottom: '1rem' }}>
+          <label>Status: </label>
+          <select value={status} onChange={(e) => setStatus(e.target.value)} required>
+            <option>Lost</option>
+            <option>Found</option>
+          </select>
+        </div>
 
-      <label>Pet Type: </label>
-      <input type="text" value={petType} onChange={(e) => setPetType(e.target.value)} required />
-      <br /><br />
+        {/* Pet Type */}
+        <div style={{ marginBottom: '1rem' }}>
+          <label>Pet Type: </label>
+          <input
+            type="text"
+            value={petType}
+            onChange={(e) => setPetType(e.target.value)}
+            required
+          />
+        </div>
 
-      <label>Last Known Location: </label>
-      <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} required />
-      <br /><br />
+        {/* Location */}
+        <div style={{ marginBottom: '1rem' }}>
+          <label>Last Known Location: </label>
+          <input
+            type="text"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            required
+          />
+        </div>
 
-      <label>Description: </label>
-      <textarea value={description} onChange={(e) => setDescription(e.target.value)} required />
-      <br /><br />
+        {/* Description */}
+        <div style={{ marginBottom: '1rem' }}>
+          <label>Description: </label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+            rows={2}
+          />
+        </div>
 
-      <label>Contact Info: </label>
-      <input
-        type="text"
-        value={contact}
-        onChange={(e) => setContact(e.target.value)}
-        placeholder="email, phone, etc."
-        required
-      />
-      <br /><br />
+        {/* Contact */}
+        <div style={{ marginBottom: '1rem' }}>
+          <label>Contact Info: </label>
+          <input
+            type="text"
+            value={contact}
+            onChange={(e) => setContact(e.target.value)}
+            placeholder="email, phone, etc."
+            required
+          />
+        </div>
 
-      <label>Upload Pet Photo (optional): </label>
-      <input
-        type="file"
-        accept="image/*"
-        onChange={(e) => setImage(e.target.files[0])}
-        ref={fileInputRef}
-      />
-      <br /><br />
+        {/* Upload */}
+        <div style={{ marginBottom: '1rem' }}>
+          <label>Upload Pet Photo (optional): </label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setImage(e.target.files[0])}
+            ref={fileInputRef}
+          />
+        </div>
 
-      <div>
-        <button type="submit">Submit</button>
-        <button
-          type="button"
-          onClick={() => navigate('/lostfound')}
-          style={{ marginLeft: '10px', backgroundColor: '#ccc' }}
-        >
-          Cancel
-        </button>
-      </div>
-    </form>
-  );
+        {/* Buttons */}
+        <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+          <button type="submit" className="pastel-button post-button">Submit</button>
+          <button
+            type="button"
+            onClick={() => navigate('/lostfound')}
+            style={{
+              marginLeft: '10px',
+              padding: '10px 32px',
+              fontSize: '1.5rem',
+              fontWeight: 'bold',
+              backgroundColor: '#ccc',
+              border: '1px solid #999',
+              borderRadius: '6px',
+              cursor: 'pointer'
+            }}
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+);
 }
