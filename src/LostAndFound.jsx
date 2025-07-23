@@ -53,19 +53,28 @@ export default function LostAndFound() {
   };
 
   const filteredPosts = posts
-    .filter(
-      (post) =>
-        (!filter || post.pet_type.toLowerCase() === filter.toLowerCase()) &&
-        (!statusFilter || post.status.toLowerCase() === statusFilter.toLowerCase())
-    )
-    .sort((a, b) => {
-      // 1. Put LOST before FOUND
-      if (a.status === 'Found' && b.status !== 'Found') return 1;
-      if (a.status !== 'Found' && b.status === 'Found') return -1;
+    .filter((post) => {
+      const pet = post.pet_type.toLowerCase();
+      const status = post.status.toLowerCase();
 
-      // 2. Within same status, sort by newest first
-      return new Date(b.created_at) - new Date(a.created_at);
-    });
+      const matchesFilter =
+        !filter ||
+        (filter.toLowerCase() === 'other'
+          ? pet !== 'dog' && pet !== 'cat' && pet !== 'bird'
+          : pet === filter.toLowerCase());
+
+      const matchesStatus = !statusFilter || status === statusFilter.toLowerCase();
+
+      return matchesFilter && matchesStatus;
+    })
+
+  const sortedPosts = [...filteredPosts]
+    .filter(post => post.status !== 'Reunited')
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    .concat(filteredPosts.filter(post => post.status === 'Reunited'));
+
+   
+
 
 
   return (
@@ -163,4 +172,3 @@ export default function LostAndFound() {
     </div>
   );
 }
-

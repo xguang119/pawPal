@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { supabase } from './supabaseClient';
 import { useNavigate } from 'react-router-dom';
@@ -11,25 +10,29 @@ import {
 } from 'mdb-react-ui-kit';
 import './App.css';
 
-export default function Login() {
+export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    setErrorMsg('');
+    setSuccessMsg('');
+
+    const { data, error } = await supabase.auth.signUp({ email, password });
+
     if (error) {
       setErrorMsg(error.message);
     } else {
-      // Login successful — navigate will redirect based on App.jsx logic
-      navigate('/feed');
+      setSuccessMsg('Check your email to confirm registration!');
+      // Optional: navigate('/login');
     }
   };
 
   return (
-
     <MDBContainer className="my-5 gradient-form">
       <MDBRow>
         <MDBCol col='6' className="mb-5">
@@ -41,16 +44,16 @@ export default function Login() {
                 style={{ width: '385px' }}
                 alt="logo"
               />
-              <h4 className="logo-title mt-1 mb-5 pb-1-1 mb-5 pb-1">pawPal</h4>
+              <h4 className="logo-title mt-1 mb-5 pb-1">pawPal</h4>
             </div>
 
-            <p>Please login to your account</p>
+            <p>Create a new account</p>
 
-            <form onSubmit={handleLogin}>
+            <form onSubmit={handleRegister}>
               <MDBInput
                 wrapperClass='mb-4'
                 label='Email address'
-                id='form1'
+                id='registerEmail'
                 type='email'
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -59,7 +62,7 @@ export default function Login() {
               <MDBInput
                 wrapperClass='mb-4'
                 label='Password'
-                id='form2'
+                id='registerPassword'
                 type='password'
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -67,19 +70,19 @@ export default function Login() {
               />
 
               {errorMsg && <p className="text-danger">{errorMsg}</p>}
+              {successMsg && <p className="text-success">{successMsg}</p>}
 
               <div className="text-center pt-1 mb-5 pb-1">
                 <MDBBtn type="submit" className="mb-4 w-100 gradient-custom text-dark">
-                  Sign in
+                  Sign Up
                 </MDBBtn>
-                <a className="text-muted" href="#!">Forgot password?</a>
               </div>
             </form>
 
             <div className="d-flex flex-row align-items-center justify-content-center pb-4 mb-4">
-              <p className="mb-0">Don't have an account?</p>
-              <MDBBtn outline className='mx-2' color='secondary' onClick={() => navigate('/register')}>
-                Register
+              <p className="mb-0">Already have an account?</p>
+              <MDBBtn outline className='mx-2' color='secondary' onClick={() => navigate('/login')}>
+                Login
               </MDBBtn>
             </div>
 
@@ -89,9 +92,9 @@ export default function Login() {
         <MDBCol col='6' className="mb-5">
           <div className="d-flex flex-column justify-content-center gradient-custom h-100 mb-4">
             <div className="description-block text-dark px-3 py-4 p-md-5 mx-md-4">
-              <h4 className="mb-4">We are more than just an app</h4>
+              <h4 className="mb-4">Join our community</h4>
               <p className="description-text mb-0">
-                Welcome to our platform where we strive to provide engagement, connection, and support among our communities. Our team is dedicated to creating a space where you can thrive, contribute, and connect. Join us in building a community that values connection and service.
+                We're more than just an app – we're a movement. Register now and be a part of our growing community of support, connection, and shared values.
               </p>
             </div>
           </div>
@@ -99,7 +102,4 @@ export default function Login() {
       </MDBRow>
     </MDBContainer>
   );
-
 }
-
-

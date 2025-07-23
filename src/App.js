@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "./supabaseClient";
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 
+
 import Login from "./login.jsx";
 import Feed from "./feed";
 import PostRequest from "./PostRequest";
@@ -12,6 +13,10 @@ import LostAndFound from "./LostAndFound";
 import LostFoundForm from './LostFoundForm';
 import EditLostFoundForm from './EditLostFoundForm';
 import MyLostFound from './MyLostFound';
+import Meetups from './Meetups';
+import MeetupForm from './MeetupForm';
+import EditMeetupForm from './EditMeetupForm';
+import Register from './Register';
 
 
 
@@ -178,6 +183,47 @@ function App() {
               <Navigate to="/login" />
             )
           }
+        />
+        <Route
+          path="/meetups"
+          element={
+            user && profileExists ? (
+              <Meetups />
+            ) : user ? (
+              <Navigate to="/complete-profile" />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+        <Route
+          path="/meetupform"
+          element={
+            user && profileExists ? (
+              <MeetupForm />
+            ) : user ? (
+              <Navigate to="/complete-profile" />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+        <Route
+          path="/edit-meetup/:id"
+          element={
+            user && profileExists ? (
+              <EditMeetupForm />
+            ) : user ? (
+              <Navigate to="/complete-profile" />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+
+        <Route 
+          path="/register" 
+          element={<Register />} 
         />
 
 
