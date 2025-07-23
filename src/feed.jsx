@@ -27,15 +27,10 @@ export default function Feed() {
     fetchHelperRatings();
   }, []);
 
-  //start from first page &
+  //start from first page
   useEffect(() => {
     setCurrentPage(1);
   }, [filter, filterByCity]);
-
-  //also for city filter---consolodated code into above portion
-  //useEffect(() => {
-    //setCurrentPage(1);
- // }, [filterByCity]);
 
   const fetchPosts = async () => {
     const { data, error } = await supabase
@@ -62,10 +57,11 @@ export default function Feed() {
       }
     }
   };
+
   // Handle status change
 
   const handleStatusChange = async (post) => {
-    // If you're the poster and someone accepted → cancel
+    // If you're the poster and someone accepted -- cancel
     if (post.username === username && post.status === 'Accepted by helper') {
       const { data: reviews, error } = await supabase
       .from('reviews')
@@ -88,7 +84,7 @@ export default function Feed() {
         .eq('id', post.id);
     }
 
-    // If you're the helper and accepted → cancel
+    // If you're the helper and accepted -- cancel
     else if (post.helper === username && post.status === 'Accepted by helper') {
       await supabase
         .from('requests')
@@ -96,7 +92,7 @@ export default function Feed() {
         .eq('id', post.id);
     }
 
-    // If post is unclaimed and not yours → accept
+    // If post is unclaimed and not yours -- accept
     else if (post.status === 'pending' && post.username !== username) {
       await supabase
         .from('requests')
@@ -116,13 +112,13 @@ export default function Feed() {
     if (filter === 'mine') return post.username === username;
     return post.service === filter;
   });
-
+  //paging feature
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
   const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
 
-
+  //get all the rating and reciew
   const fetchHelperRatings = async () => {
     const { data, error } = await supabase
       .from('reviews')
@@ -133,8 +129,8 @@ export default function Feed() {
       return;
     }
   
-    const ratingMap = {};
-    const reviewMap = {};
+    const ratingMap = {};//save helper's rate and num of review
+    const reviewMap = {};//save review
   
     data.forEach(({ helper_email, rating, comment, request_id }) => {
 
@@ -149,12 +145,14 @@ export default function Feed() {
       }
       reviewMap[request_id].push({ rating, comment });
     });
+
+    //calculate the average score
     const avgMap = {};
     for (const email in ratingMap) {
       const { total, count } = ratingMap[email];
       avgMap[email] = {
         average: (total / count).toFixed(1),
-        count
+        count//amount
       };
     }
   
@@ -240,6 +238,8 @@ export default function Feed() {
           <p>Contact ({post.contact_type}): {post.contact}</p>
           <p>Status: {post.status === 'pending' ? 'Not accepted yet' : 'Accepted'}</p>
           <p>Posted by: {post.username || 'Unknown'}</p>
+
+          {/*if helper accept, show the rating and review*/}
           {post.helper && (
             <>
               <p style={{ fontSize: '0.85em', color: '#4CAF50' }}>
@@ -270,7 +270,7 @@ export default function Feed() {
             </>
           )}
 
-
+          {/*accpet and cancel botton*/}
           <button className="pastel-button" onClick={() => handleStatusChange(post)} style={{ marginTop: '0.5rem' }}>
             {
               post.status === 'Accepted by helper'
@@ -278,6 +278,7 @@ export default function Feed() {
                 : (post.username !== username ? 'Accept' : 'Waiting...')
             }
           </button>
+          {/*poster can review*/}
           {post.username === username && post.status === 'Accepted by helper' && (
             <button className="pastel-button" onClick={() => {
                 setSelectedPost(post);
