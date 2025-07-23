@@ -6,17 +6,18 @@ import './feed.css';
 export default function Profile() {
   const [userEmail, setUserEmail] = useState('');
   const [profile, setProfile] = useState(null);
-  const navigate = useNavigate();
-const [averageRating, setAverageRating] = useState(null);
+  const [averageRating, setAverageRating] = useState(null);
   const [reviewCount, setReviewCount] = useState(0);
-
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserProfile = async () => {
       const { data: { user }, error } = await supabase.auth.getUser();
+
       if (user) {
         setUserEmail(user.email);
-const { data: reviews, error: reviewError } = await supabase
+
+        const { data: reviews, error: reviewError } = await supabase
           .from('reviews')
           .select('rating')
           .eq('helper_email', user.email);
@@ -29,8 +30,6 @@ const { data: reviews, error: reviewError } = await supabase
           setAverageRating(avg);
           setReviewCount(reviews.length);
         }
-
-
 
         const { data: profileData, error: profileError } = await supabase
           .from('profile')
@@ -58,7 +57,7 @@ const { data: reviews, error: reviewError } = await supabase
 
   return (
     <div className="gradient-custom" style={{ minHeight: '100vh', padding: '2rem 0' }}>
-       <div style={{
+      <div style={{
         maxWidth: '600px',
         margin: '0 auto',
         backgroundColor: '#f6efdb',
@@ -75,42 +74,64 @@ const { data: reviews, error: reviewError } = await supabase
           marginBottom: '1.5rem'
         }}>Your Profile</h2>
 
-      <p><strong>Email:</strong> {userEmail}</p>
+        <p><strong>Email:</strong> {userEmail}</p>
 
-      {profile ? (
-        <>
-          <p><strong>User Name:</strong> {profile['User name']}</p>
-          <p><strong>Phone:</strong> {profile.phone}</p>
-          <p><strong>Location:</strong> {profile.location}</p>
-          <p><strong>Pet Type:</strong> {profile['pet type']}</p>
-          <p><strong>Rating:</strong> {
-          reviewCount > 0
-          //show rate and how many reviews
-          ? <>❤️ {averageRating} / 5 ({reviewCount} reviews)</>
-          //if no review
-          : <span style={{ color: '#777' }}>No reviews yet</span>
-        }</p>
+        {profile ? (
+          <>
+            <p><strong>User Name:</strong> {profile['User name']}</p>
+            <p><strong>Phone:</strong> {profile.phone}</p>
+            <p><strong>Location:</strong> {profile.location}</p>
+            <p><strong>Pet Type:</strong> {profile['pet type']}</p>
+            <p><strong>Rating:</strong> {
+              reviewCount > 0
+                ? <>❤️ {averageRating} / 5 ({reviewCount} reviews)</>
+                : <span style={{ color: '#777' }}>No reviews yet</span>
+            }</p>
 
+            {profile['profile pic'] && (
+              <div style={{ marginTop: '1rem' }}>
+                <img
+                  src={profile['profile pic']}
+                  alt="Profile"
+                  style={{ width: '150px', height: '150px', borderRadius: '50%' }}
+                />
+              </div>
+            )}
+          </>
+        ) : (
+          <p>Loading profile...</p>
+        )}
 
-          {profile['profile pic'] && (
-            <div style={{ marginTop: '1rem' }}>
-              <img
-                src={profile['profile pic']}
-                alt="Profile"
-                style={{ width: '150px', height: '150px', borderRadius: '50%' }}
-              />
-            </div>
-          )}
-        </>
-      ) : (
-        <p>Loading profile...</p>
-      )}
+        <div style={{
+          marginTop: '2rem',
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '1rem',
+          flexWrap: 'wrap'
+        }}>
+          <button
+            className="pastel-button"
+            onClick={() => navigate('/feed')}
+          >
+            Back to Feed
+          </button>
 
-      <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'center', gap: '1rem' }}>
-        <button  className="pastel-button" onClick={() => navigate('/feed')} style={{ marginRight: '1rem' }}>
-          Back to Feed
-        </button>
-        <button  
+          <button
+            style={{
+              backgroundColor: '#4CAF50',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '10px',
+              padding: '8px 16px',
+              fontWeight: 'bold',
+              cursor: 'pointer'
+            }}
+            onClick={() => navigate('/petsprofile')}
+          >
+            Edit Pet Profile
+          </button>
+
+          <button
             style={{
               backgroundColor: '#f44336',
               color: '#fff',
@@ -123,8 +144,8 @@ const { data: reviews, error: reviewError } = await supabase
             onClick={handleLogout}
           >
             Logout
-        </button>
-      </div>
+          </button>
+        </div>
       </div>
     </div>
   );
