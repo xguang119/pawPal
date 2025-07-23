@@ -128,7 +128,7 @@ export default function Profile() {
             }}
             onClick={() => navigate('/petsprofile')}
           >
-            Edit Pet Profile
+            Pet Profile
           </button>
 
           <button
