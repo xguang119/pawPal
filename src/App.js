@@ -17,6 +17,7 @@ import Meetups from './Meetups';
 import MeetupForm from './MeetupForm';
 import EditMeetupForm from './EditMeetupForm';
 import Register from './Register';
+import PetsProfile from './petsprofile';
 
 
 
@@ -225,6 +226,20 @@ function App() {
           path="/register" 
           element={<Register />} 
         />
+
+        <Route
+          path="/petsprofile"
+          element={
+            user && profileExists ? (
+              <PetsProfile />
+            ) : user ? (
+              <Navigate to="/complete-profile" />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+
 
 
       </Routes>
