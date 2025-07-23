@@ -7,7 +7,7 @@ export default function Profile() {
   const [userEmail, setUserEmail] = useState('');
   const [profile, setProfile] = useState(null);
   const navigate = useNavigate();
-  const [averageRating, setAverageRating] = useState(null);
+const [averageRating, setAverageRating] = useState(null);
   const [reviewCount, setReviewCount] = useState(0);
 
 
@@ -16,7 +16,7 @@ export default function Profile() {
       const { data: { user }, error } = await supabase.auth.getUser();
       if (user) {
         setUserEmail(user.email);
-        const { data: reviews, error: reviewError } = await supabase
+const { data: reviews, error: reviewError } = await supabase
           .from('reviews')
           .select('rating')
           .eq('helper_email', user.email);

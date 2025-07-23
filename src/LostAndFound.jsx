@@ -96,11 +96,10 @@ export default function LostAndFound() {
         gap: '10px'
       }}>
         <button className="pastel-button" onClick={() => navigate('/feed')}>Back to Home</button>
-        <button className="pastel-button" onClick={() => navigate('/mylostfound')}>My Posts</button>
         <button className="pastel-button" onClick={() => navigate('/lostfoundform')}>Post Lost/Found Pet</button>
       </div>
 
-      <h2 style={{ color: '#58bfbc', fontSize: '3.75rem', textAlign: 'center' }}>Lost and Found Pet Feed</h2>
+      <h2 style={{ color: '#58bfbc', fontSize: '3.75rem', textAlign: 'center' }}>Lost & Found Pets</h2>
 
       <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
         <div>

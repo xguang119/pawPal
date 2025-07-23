@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 export default function MyLostFound() {
   const [posts, setPosts] = useState([]);
   const [username, setUsername] = useState('');
+  
   const navigate = useNavigate();
 
   useEffect(() => {

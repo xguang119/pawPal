@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from './supabaseClient';
 import { useNavigate } from 'react-router-dom';
+import './App.css';
 
 export default function MeetupForm() {
   const [title, setTitle] = useState('');
@@ -77,48 +78,109 @@ export default function MeetupForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: '600px', margin: '2rem auto' }}>
-      <h2>Post a Pet Meetup</h2>
-
-      <label>Title: </label>
-      <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
-      <br /><br />
-
-      <label>Description: </label>
-      <textarea value={description} onChange={(e) => setDescription(e.target.value)} required />
-      <br /><br />
-
-      <label>Location: </label>
-      <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} required />
-      <br /><br />
-
-      <label>Date & Time: </label>
-      <input type="datetime-local" value={datetime} onChange={(e) => setDatetime(e.target.value)} required />
-      <br /><br />
-
-      <label>Pet Type: </label>
-      <input type="text" value={petType} onChange={(e) => setPetType(e.target.value)} required />
-      <br /><br />
-
-      <label>Upload Meetup Photo (optional): </label>
-      <input
-        type="file"
-        accept="image/*"
-        onChange={(e) => setImage(e.target.files[0])}
-        ref={fileInputRef}
-      />
-      <br /><br />
-
-      <div>
-        <button type="submit">Submit</button>
-        <button
-          type="button"
-          onClick={() => navigate('/meetups')}
-          style={{ marginLeft: '10px', backgroundColor: '#ccc' }}
-        >
-          Cancel
-        </button>
+    <div className="gradient-custom" style={{ minHeight: '100vh', padding: '2rem 0' }}>
+    <div style={{
+      maxWidth: '700px',
+      margin: '0 auto',
+      backgroundColor: '#f6efdb',
+      padding: '2rem',
+      borderRadius: '16px',
+      boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
+      fontFamily: 'Arial, sans-serif'
+    }}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <button className="pastel-button" onClick={() => navigate('/meetups')}>Cancel</button>
       </div>
-    </form>
+
+      <h2 style={{
+        fontFamily: 'Arial, sans-serif',
+        fontSize: '3.5rem',
+        fontWeight: 'bold',
+        textAlign: 'center',
+        color: '#444',
+        marginBottom: '24px'
+      }}>
+        Post a Pet Meetup
+      </h2>
+
+      <form onSubmit={handleSubmit}>
+        {/* Title */}
+        <div style={{ marginBottom: '12px' }}>
+          <label>Title:</label>
+          <input
+            className="pastel-input"
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+        </div>
+
+        {/* Description */}
+        <div style={{ marginBottom: '12px' }}>
+          <label>Description:</label>
+          <textarea
+            className="pastel-input"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows={2}
+            required
+          />
+        </div>
+
+        {/* Location */}
+        <div style={{ marginBottom: '12px' }}>
+          <label>Location:</label>
+          <input
+            className="pastel-input"
+            type="text"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            required
+          />
+        </div>
+
+        {/* DateTime */}
+        <div style={{ marginBottom: '12px' }}>
+          <label>Date & Time:</label>
+          <input
+            className="pastel-input"
+            type="datetime-local"
+            value={datetime}
+            onChange={(e) => setDatetime(e.target.value)}
+            required
+          />
+        </div>
+
+        {/* Pet Type */}
+        <div style={{ marginBottom: '12px' }}>
+          <label>Pet Type:</label>
+          <input
+            className="pastel-input"
+            type="text"
+            value={petType}
+            onChange={(e) => setPetType(e.target.value)}
+            required
+          />
+        </div>
+
+        {/* Image Upload */}
+        <div style={{ marginBottom: '12px' }}>
+          <label>Upload Meetup Photo (optional):</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setImage(e.target.files[0])}
+            ref={fileInputRef}
+          />
+        </div>
+
+        {/* Submit */}
+        <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+          <button type="submit" className="pastel-button post-button">Submit</button>
+        </div>
+      </form>
+    </div>
+    </div>
   );
 }

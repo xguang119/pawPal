@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from './supabaseClient';
+import './App.css';
 
 const EditMeetupForm = () => {
   const { id } = useParams();
@@ -80,59 +81,106 @@ const EditMeetupForm = () => {
   };
 
   return (
-    <div style={{ maxWidth: '600px', margin: '0 auto' }}>
-      <h2>Edit Meetup</h2>
-      <form onSubmit={handleUpdate} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-        <label>
-          Title:
-          <input value={title} onChange={(e) => setTitle(e.target.value)} required />
-        </label>
-
-        <label>
-          Description:
-          <textarea value={description} onChange={(e) => setDescription(e.target.value)} required />
-        </label>
-
-        <label>
-          Location:
-          <input value={location} onChange={(e) => setLocation(e.target.value)} required />
-        </label>
-
-        <label>
-          Date & Time:
+    <div className="gradient-custom" style={{ minHeight: '100vh', padding: '2rem 0' }}>
+    <div style={{
+      maxWidth: '700px',
+      margin: '0 auto',
+      backgroundColor: '#fefefe',
+      padding: '2rem',
+      borderRadius: '16px',
+      boxShadow: '0 6px 24px rgba(0, 0, 0, 0.12)',
+      fontFamily: 'Arial, sans-serif'
+    }}>
+      <h2 style={{ color: '#58bfbc', fontSize: '3rem', textAlign: 'center', marginBottom: '1.5rem' }}>
+        Edit Meetup
+      </h2>
+      <form onSubmit={handleUpdate}>
+        {/* Title */}
+        <div style={{ marginBottom: '1.25rem' }}>
+          <label>Title:</label>
           <input
+            className="pastel-input"
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+        </div>
+
+        {/* Description */}
+        <div style={{ marginBottom: '1.25rem' }}>
+          <label>Description:</label>
+          <textarea
+            className="pastel-input"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+            rows={3}
+          />
+        </div>
+
+        {/* Location */}
+        <div style={{ marginBottom: '1.25rem' }}>
+          <label>Location:</label>
+          <input
+            className="pastel-input"
+            type="text"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            required
+          />
+        </div>
+
+        {/* Date & Time */}
+        <div style={{ marginBottom: '1.25rem' }}>
+          <label>Date & Time:</label>
+          <input
+            className="pastel-input"
             type="datetime-local"
             value={datetime?.slice(0, 16)}
             onChange={(e) => setDatetime(e.target.value)}
             required
           />
-        </label>
+        </div>
 
-        <label>
-        Pet Type:
-        <input
+        {/* Pet Type */}
+        <div style={{ marginBottom: '1.25rem' }}>
+          <label>Pet Type:</label>
+          <input
+            className="pastel-input"
             type="text"
             value={petType}
             onChange={(e) => setPetType(e.target.value)}
             required
-        />
-        </label>
+          />
+        </div>
 
+        {/* Image Upload */}
+        <div style={{ marginBottom: '1.25rem' }}>
+          <label>Upload New Photo (optional):</label>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={(e) => setImage(e.target.files[0])}
+          />
+        </div>
 
-        <label>
-          Upload New Photo (optional):
-          <input type="file" ref={fileInputRef} onChange={(e) => setImage(e.target.files[0])} />
-        </label>
-
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <button type="submit">Update Meetup</button>
-          <button type="button" onClick={() => navigate('/meetups')}>
+        {/* Buttons */}
+        <div style={{ display: 'flex', gap: '12px', marginTop: '1.5rem' }}>
+          <button type="submit" className="pastel-button">Update Meetup</button>
+          <button
+            type="button"
+            className="pastel-button"
+            style={{ backgroundColor: '#ccc' }}
+            onClick={() => navigate('/meetups')}
+          >
             Cancel
           </button>
         </div>
       </form>
     </div>
+    </div>
   );
-};
+}
 
 export default EditMeetupForm;
