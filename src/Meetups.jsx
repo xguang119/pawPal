@@ -112,7 +112,10 @@ export default function Meetups() {
 
       {filteredMeetups.length === 0 && <p>No meetups found.</p>}
 
-      {filteredMeetups.map((meetup) => {
+      {[...filteredMeetups]
+      .sort((a, b) => new Date(a.datetime) - new Date(b.datetime))
+      .map((meetup) => {
+
         const isInterested = Array.isArray(meetup.interested) && user && meetup.interested.includes(user.id);
 
         return (

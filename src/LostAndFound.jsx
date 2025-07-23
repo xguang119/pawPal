@@ -125,7 +125,7 @@ export default function LostAndFound() {
 
       {filteredPosts.length === 0 && <p>No matching lost/found posts found.</p>}
 
-       {filteredPosts.map((post) => (
+       {sortedPosts.map((post) => (
          <div key={post.id} style={{
             border: '1px solid #e0e0e0',
             backgroundColor: '#f6efdb',
@@ -141,7 +141,7 @@ export default function LostAndFound() {
                 style={{ width: '100%', borderRadius: '8px', marginBottom: '12px' }}
               />
             )}
-            <p style={{ color: post.status === 'Found' ? 'green' : 'red', fontWeight: 'bold' }}>
+            <p style={{ color: post.status === 'Reunited' ? 'green' : 'red', fontWeight: 'bold' }}>
               {post.status} - {post.pet_type}
            </p>
             <p><em>Last seen at:</em> {post.location}</p>
