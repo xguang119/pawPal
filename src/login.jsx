@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { supabase } from './supabaseClient';
 import { useNavigate } from 'react-router-dom';
@@ -78,7 +77,7 @@ export default function Login() {
 
             <div className="d-flex flex-row align-items-center justify-content-center pb-4 mb-4">
               <p className="mb-0">Don't have an account?</p>
-              <MDBBtn outline className='mx-2' color='secondary'>
+              <MDBBtn outline className='mx-2' color='secondary' onClick={() => navigate('/register')}>
                 Register
               </MDBBtn>
             </div>
@@ -99,7 +98,4 @@ export default function Login() {
       </MDBRow>
     </MDBContainer>
   );
-
 }
-
-
