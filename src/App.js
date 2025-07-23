@@ -16,7 +16,7 @@ import MyLostFound from './MyLostFound';
 import Meetups from './Meetups';
 import MeetupForm from './MeetupForm';
 import EditMeetupForm from './EditMeetupForm';
-
+import Register from './Register';
 
 
 
@@ -220,7 +220,11 @@ function App() {
             )
           }
         />
-
+        
+        <Route 
+          path="/register" 
+          element={<Register />} 
+        />
 
       </Routes>
     </Router>
