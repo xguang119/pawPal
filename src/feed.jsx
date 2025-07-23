@@ -3,7 +3,7 @@ import { supabase } from "./supabaseClient";
 import { useNavigate } from "react-router-dom";
 import { sendAcceptanceEmail } from './sendEmail';
 import ReviewForm from './ReviewForm';
-
+import './feed.css';
 
 export default function Feed() {
   const [posts, setPosts] = useState([]);
@@ -20,9 +20,6 @@ export default function Feed() {
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 6;// 6 tasks per page
 
-
-
-
   // Fetch posts
   useEffect(() => {
     fetchPosts();
@@ -30,15 +27,15 @@ export default function Feed() {
     fetchHelperRatings();
   }, []);
 
-  //start from first page
+  //start from first page &
   useEffect(() => {
     setCurrentPage(1);
-  }, [filter]);
+  }, [filter, filterByCity]);
 
-  //also for city filter
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [filterByCity]);
+  //also for city filter---consolodated code into above portion
+  //useEffect(() => {
+    //setCurrentPage(1);
+ // }, [filterByCity]);
 
   const fetchPosts = async () => {
     const { data, error } = await supabase
@@ -65,7 +62,7 @@ export default function Feed() {
       }
     }
   };
-
+  // Handle status change
 
   const handleStatusChange = async (post) => {
     // If you're the poster and someone accepted → cancel
@@ -166,32 +163,52 @@ export default function Feed() {
   };
 
   return (
-    <div style={{ maxWidth: '650px', margin: '40px auto' }}>
+    <div className="gradient-custom" style={{ minHeight: '100vh', padding: '2rem 0' }}>
+    <div style={{ 
+      maxWidth: '850px', 
+      margin: '20px auto',
+      backgroundColor: '#fefefe',
+      padding: '2rem',
+      borderRadius: '16px',
+      boxShadow: '0 6px 24px rgba(0, 0, 0, 0.12)',
+      fontFamily: 'Arial, sans-serif'
+    }}>
       {/* Top Navigation Buttons */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-        <button onClick={() => navigate('/request')}>Post a New Request</button>
-        <button onClick={() => navigate('/profile')}>Go to Profile</button>
-        <button onClick={() => navigate('/lostfound')}>Lost and Found</button>
-        <button onClick={() => navigate('/meetups')}>Find Pet Meetups</button>
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          marginBottom: '1.5rem',
+          flexWrap: 'wrap',
+          gap: '10px'
+        }}>
+        <button className="pastel-button" onClick={() => navigate('/request')}>Post a New Request</button>
+        <button className="pastel-button" onClick={() => navigate('/profile')}>Go to Profile</button>
+        <button className="pastel-button" onClick={() => navigate('/lostfound')}>Lost and Found</button>
+        <button className="pastel-button" onClick={() => navigate('/meetups')}>Find Pet Meetups</button>
+
       </div>
 
       {/* Filter Controls */}
-      <div style = {{marginBottom: '1rem' }}>
-        <label>Filter: </label>
-        <select value = {filter} onChange={(e) => setFilter(e.target.value)}>
-          <option value ="all">Show All</option>
-          <option value ="pending">Pending</option>
-          <option value ="mine">My Posts</option>
-          <option value ="Dog walking">Dog walking</option>
-          <option value ="Vaccinations">Vaccinations</option>
-          <option value ="Grooming">Grooming</option>
-          <option value ="Daycare">Daycare</option>
-        </select>
-      </div>
+      <div style = {{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', alignItems: 'center' }}>
+        <div>
+          <label style={{marginRight: '0.5rem'}}>Filter: </label>
+          <select
+           className="pastel-select"
+           value = {filter} 
+           onChange={(e) => setFilter(e.target.value)}
+          >
+            <option value ="all">Show All</option>
+            <option value ="pending">Pending</option>
+            <option value ="mine">My Posts</option>
+            <option value ="Dog walking">Dog walking</option>
+            <option value ="Vaccinations">Vaccinations</option>
+            <option value ="Grooming">Grooming</option>
+            <option value ="Daycare">Daycare</option>
+          </select>
+        </div>
 
-      {/* city filter */}
-      <div style={{ marginTop: '0.5rem' }}>
-        <label>
+      {/* city filter -----need to format this*/}
+      <label style={{ marginTop: '0.5rem' }}>
           <input
             type="checkbox"
             checked={filterByCity}
@@ -201,13 +218,22 @@ export default function Feed() {
           {' '}Only show requests in my city ({userLocation || 'loading...'})
         </label>
       </div>
-      
 
-      <h2>Recent Requests</h2>
+      <h2 style={{ color: '#58bfbc', fontSize: '3.75rem', textAlign: 'center' }}>Community Requests</h2>
 
       {filteredPosts.length === 0 && <p>No matching requests found.</p>}
+
+           {/* Posts UI */}
       {currentPosts.map((post) => (
-        <div key={post.id} style={{ border: '1px solid #ccc', padding: '12px', marginBottom: '12px' }}>
+        <div key={post.id} style={{ 
+            border: '1px solid #e0e0e0',
+            backgroundColor: '#f6efdb', 
+            padding: '16px',
+           borderRadius: '12px', 
+           marginBottom: '20px',
+            boxShadow: '0 2px 6px rgba(0,0,0,0.05)'
+          }}>
+
           {post.image_url && <img src={post.image_url} alt="Request" style={{ width: '100%', marginBottom: '8px' }} />}
           <p><strong>{post.service}</strong> · {post.date} {post.time}</p>
           <p>{post.description}</p>
@@ -215,8 +241,8 @@ export default function Feed() {
           <p>Status: {post.status === 'pending' ? 'Not accepted yet' : 'Accepted'}</p>
           <p>Posted by: {post.username || 'Unknown'}</p>
           {post.helper && (
-            <div>
-              <p style={{ fontSize: '0.8em', color: '#007700' }}>
+            <>
+              <p style={{ fontSize: '0.85em', color: '#4CAF50' }}>
                 Accepted by: {post.helper}
                 {/* if helper has 'rating' */}
                 {helperRatings[post.helper] ? (
@@ -232,21 +258,20 @@ export default function Feed() {
 
               </p>
               {helperReviews[post.id] && (
-              <div style={{ marginLeft: '10px', fontSize: '0.8em', color: '#444' }}>
-                <strong>📝Review:</strong>
-                <ul style={{ paddingLeft: '16px', marginTop: '4px' }}>
-                  {helperReviews[post.id].map((r, idx) => (
+                <div style={{ marginLeft: '10px', fontSize: '0.8em', color: '#444' }}>
+                  <strong>📝Review:</strong>
+                  <ul style={{ paddingLeft: '16px', marginTop: '4px' }}>
+                   {helperReviews[post.id].map((r, idx) => (
                     <li key={idx}>❤️ {r.rating} – {r.comment || 'No comment'}</li>
-                  ))}
-               </ul>
-              </div>
-            )}
-            </div>
-            
+                   ))}
+                  </ul>
+                </div>
+              )}
+            </>
           )}
 
 
-          <button onClick={() => handleStatusChange(post)} style={{ marginTop: '0.5rem' }}>
+          <button className="pastel-button" onClick={() => handleStatusChange(post)} style={{ marginTop: '0.5rem' }}>
             {
               post.status === 'Accepted by helper'
                 ? 'Cancel'
@@ -254,12 +279,11 @@ export default function Feed() {
             }
           </button>
           {post.username === username && post.status === 'Accepted by helper' && (
-            <button
-              onClick={() => {
+            <button className="pastel-button" onClick={() => {
                 setSelectedPost(post);
                 setShowReviewForm(true);
               }}
-              style={{ marginTop: '8px' }}
+              style={{ marginTop:  '0.5rem', marginLeft: '8px' }}
             >
               Rate Helper
             </button>
@@ -295,15 +319,11 @@ export default function Feed() {
             {page}
           </button>
         ))}
-
-
         <button
           onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
           disabled={currentPage === totalPages}
           style={{ margin: '0 6px' }}
-        >
-          Next
-        </button>
+        >Next</button>
       </div>
     )}
 
@@ -318,7 +338,7 @@ export default function Feed() {
           }}
         />
       )}
-
+      </div>
     </div>
   );
 }

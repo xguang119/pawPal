@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from './supabaseClient';
 import { useNavigate } from 'react-router-dom';
+import './feed.css';
 
 export default function LostAndFound() {
   const [posts, setPosts] = useState([]);
@@ -77,19 +78,33 @@ export default function LostAndFound() {
 
 
   return (
-    <div style={{ maxWidth: '650px', margin: '40px auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-        <button onClick={() => navigate('/feed')}>Back to Home</button>
-        <button onClick={() => navigate('/mylostfound')}>My Posts</button>
-        <button onClick={() => navigate('/lostfoundform')}>Post Lost/Found Pet</button>
+    <div className="gradient-custom" style={{ minHeight: '100vh', padding: '2rem 0' }}>
+    <div style={{
+      maxWidth: '850px',
+      margin: '0 auto',
+      backgroundColor: '#fefefe',
+      padding: '2rem',
+      borderRadius: '16px',
+      boxShadow: '0 6px 24px rgba(0, 0, 0, 0.12)',
+      fontFamily: 'Arial, sans-serif'
+    }}>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        marginBottom: '1.5rem',
+        flexWrap: 'wrap',
+        gap: '10px'
+      }}>
+        <button className="pastel-button" onClick={() => navigate('/feed')}>Back to Home</button>
+        <button className="pastel-button" onClick={() => navigate('/lostfoundform')}>Post Lost/Found Pet</button>
       </div>
 
-      <h2>Lost and Found Pet Feed</h2>
+      <h2 style={{ color: '#58bfbc', fontSize: '3.75rem', textAlign: 'center' }}>Lost & Found Pets</h2>
 
-      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
         <div>
           <label>Filter by Pet Type: </label>
-          <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+          <select className="pastel-select" value={filter} onChange={(e) => setFilter(e.target.value)}>
             <option value="">All</option>
             <option value="Dog">Dog</option>
             <option value="Cat">Cat</option>
@@ -100,7 +115,7 @@ export default function LostAndFound() {
 
         <div>
           <label>Filter by Status: </label>
-          <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+          <select className="pastel-select" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
             <option value="">All</option>
             <option value="Lost">Lost</option>
             <option value="Found">Found</option>
@@ -109,41 +124,50 @@ export default function LostAndFound() {
       </div>
 
       {filteredPosts.length === 0 && <p>No matching lost/found posts found.</p>}
-      {sortedPosts.map((post) => (
-        <div key={post.id} style={{ border: '1px solid #ccc', padding: '12px', marginBottom: '12px' }}>
-          {post.image_url && (
-            <img
-              src={post.image_url}
-              alt="Lost/Found Pet"
-              style={{ width: '100%', marginBottom: '8px' }}
-            />
-          )}
-          <p style={{ color: post.status === 'Reunited' ? 'green' : 'red', fontWeight: 'bold' }}>
-            {post.status} - {post.pet_type}
-          </p>
-          <p><em>Last seen at:</em> {post.location}</p>
-          <p><small>Description:</small> {post.description}</p>
-          <p><small>Contact:</small> {post.contact}</p>
-          <p><small>Posted by: {post.username}</small></p>
-          <p style={{ fontSize: '0.8em', color: '#666' }}>
-            Posted on: {new Date(post.created_at).toLocaleString()}
-          </p>
 
-          {post.username === username && (
-            <>
-              <button onClick={() => navigate(`/editlostfound/${post.id}`)}>Edit</button>
-              {post.status === 'Lost' && (
-                <button style={{ marginLeft: '8px' }} onClick={() => markAsFound(post.id)}>
-                  Mark as Found
+       {filteredPosts.map((post) => (
+         <div key={post.id} style={{
+            border: '1px solid #e0e0e0',
+            backgroundColor: '#f6efdb',
+            padding: '16px',
+            borderRadius: '12px',
+            marginBottom: '20px',
+            boxShadow: '0 2px 6px rgba(0,0,0,0.05)'
+          }}>
+            {post.image_url && (
+              <img
+                src={post.image_url}
+                alt="Lost/Found Pet"
+                style={{ width: '100%', borderRadius: '8px', marginBottom: '12px' }}
+              />
+            )}
+            <p style={{ color: post.status === 'Found' ? 'green' : 'red', fontWeight: 'bold' }}>
+              {post.status} - {post.pet_type}
+           </p>
+            <p><em>Last seen at:</em> {post.location}</p>
+            <p><small>Description:</small> {post.description}</p>
+            <p><small>Contact:</small> {post.contact}</p>
+            <p><small>Posted by: {post.username}</small></p>
+            <p style={{ fontSize: '0.8em', color: '#666' }}>
+              Posted on: {new Date(post.created_at).toLocaleString()}
+            </p>
+
+            {post.username === username && (
+              <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+                <button className="pastel-button" onClick={() => navigate(`/editlostfound/${post.id}`)}>Edit</button>
+                {post.status === 'Lost' && (
+                  <button className="pastel-button" onClick={() => markAsFound(post.id)}>
+                    Mark as Found
+                 </button>
+               )}
+                <button className="pastel-button" style={{ backgroundColor: '#f77' }} onClick={() => deletePost(post.id)}>
+                  Delete
                 </button>
-              )}
-              <button style={{ marginLeft: '8px', backgroundColor: '#f77' }} onClick={() => deletePost(post.id)}>
-                Delete
-              </button>
-            </>
-          )}
-        </div>
-      ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

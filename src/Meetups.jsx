@@ -79,17 +79,28 @@ export default function Meetups() {
   
 
   return (
-    <div style={{ maxWidth: '650px', margin: '40px auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-        <button onClick={() => navigate('/feed')}>Back to Home</button>
-        <button onClick={() => navigate('/meetupform')}>Post a Meetup</button>
+    <div className="gradient-custom" style={{ minHeight: '100vh', padding: '2rem 0' }}>
+    <div style={{ 
+      maxWidth: '850px', 
+      margin: '20px auto',
+      backgroundColor: '#fefefe',
+      padding: '2rem',
+      borderRadius: '16px',
+      boxShadow: '0 6px 24px rgba(0, 0, 0, 0.12)',
+      fontFamily: 'Arial, sans-serif'
+    }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '10px' }}>
+        <button className="pastel-button" onClick={() => navigate('/feed')}>Back to Home</button>
+        <button className="pastel-button" onClick={() => navigate('/meetupform')}>Post a Meetup</button>
       </div>
 
-      <h2>Pet Social Meetups</h2>
+      <h2 style={{ color: '#58bfbc', fontSize: '3.25rem', textAlign: 'center', marginBottom: '2rem' }}>
+        Pet Social Meetups
+      </h2>
 
-      <div style={{ marginBottom: '1rem' }}>
-        <label>Filter by Pet Type: </label>
-        <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+      <div style={{ marginBottom: '1.5rem' }}>
+        <label style={{ marginRight: '0.5rem' }}>Filter by Pet Type:</label>
+        <select className="pastel-select" value={filter} onChange={(e) => setFilter(e.target.value)}>
           <option value="">All</option>
           <option value="MyPosts">My Posts</option>
           <option value="Dog">Dog</option>
@@ -105,16 +116,23 @@ export default function Meetups() {
         const isInterested = Array.isArray(meetup.interested) && user && meetup.interested.includes(user.id);
 
         return (
-          <div key={meetup.id} style={{ border: '1px solid #ccc', padding: '12px', marginBottom: '12px' }}>
+          <div key={meetup.id} style={{ 
+            border: '1px solid #e0e0e0',
+            backgroundColor: '#f6efdb', 
+            padding: '16px',
+            borderRadius: '12px', 
+            marginBottom: '20px',
+            boxShadow: '0 2px 6px rgba(0,0,0,0.05)'
+          }}>
             {meetup.image_url && (
               <img
                 src={meetup.image_url}
                 alt="Meetup"
-                style={{ width: '100%', marginBottom: '8px' }}
+                style={{ width: '100%', marginBottom: '8px', borderRadius: '8px' }}
               />
             )}
 
-            <p style={{ fontWeight: 'bold' }}>{meetup.title}</p>
+            <p><strong>{meetup.title}</strong></p>
             <p><small>Pet Type:</small> {meetup.pet_type}</p>
             <p><small>Location:</small> {meetup.location}</p>
             <p><small>Date & Time:</small> {new Date(meetup.datetime).toLocaleString()}</p>
@@ -125,29 +143,33 @@ export default function Meetups() {
             </p>
 
             {user && (
-              <button onClick={() => toggleInterest(meetup.id, meetup.interested)}>
+              <button className="pastel-button" onClick={() => toggleInterest(meetup.id, meetup.interested)} style={{ marginTop: '0.5rem' }}>
                 {isInterested ? 'Un-RSVP' : 'RSVP'}
               </button>
             )}
 
             {user && meetup.user_id === user.id && (
               <>
-                <button onClick={() => navigate(`/edit-meetup/${meetup.id}`)} style={{ marginLeft: '8px' }}>
+                <button className="pastel-button" onClick={() => navigate(`/edit-meetup/${meetup.id}`)} style={{ marginLeft: '8px', marginTop: '0.5rem' }}>
                   Edit
                 </button>
                 <button
+                  className="pastel-button"
                   onClick={() => deletePost(meetup.id)}
-                  style={{ marginLeft: '8px', backgroundColor: '#f77' }}
+                  style={{ marginLeft: '8px', marginTop: '0.5rem', backgroundColor: '#f77' }}
                 >
                   Delete
                 </button>
               </>
             )}
 
-            <p><small>{meetup.interested?.length || 0} people interested</small></p>
+            <p style={{ marginTop: '0.5rem' }}>
+              <small>{meetup.interested?.length || 0} people interested</small>
+            </p>
           </div>
         );
       })}
+    </div>
     </div>
   );
 }

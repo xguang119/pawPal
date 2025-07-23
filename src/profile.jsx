@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { supabase } from './supabaseClient';
 import { useNavigate } from 'react-router-dom';
+import './feed.css';
 
 export default function Profile() {
   const [userEmail, setUserEmail] = useState('');
   const [profile, setProfile] = useState(null);
   const navigate = useNavigate();
-  const [averageRating, setAverageRating] = useState(null);
+const [averageRating, setAverageRating] = useState(null);
   const [reviewCount, setReviewCount] = useState(0);
 
 
@@ -15,7 +16,7 @@ export default function Profile() {
       const { data: { user }, error } = await supabase.auth.getUser();
       if (user) {
         setUserEmail(user.email);
-        const { data: reviews, error: reviewError } = await supabase
+const { data: reviews, error: reviewError } = await supabase
           .from('reviews')
           .select('rating')
           .eq('helper_email', user.email);
@@ -56,8 +57,23 @@ export default function Profile() {
   };
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '500px', margin: 'auto' }}>
-      <h2>Your Profile</h2>
+    <div className="gradient-custom" style={{ minHeight: '100vh', padding: '2rem 0' }}>
+       <div style={{
+        maxWidth: '600px',
+        margin: '0 auto',
+        backgroundColor: '#f6efdb',
+        padding: '2rem',
+        borderRadius: '16px',
+        boxShadow: '0 6px 24px rgba(0, 0, 0, 0.12)',
+        fontFamily: 'Arial, sans-serif',
+        textAlign: 'center'
+      }}>
+        <h2 style={{
+          fontSize: '3rem',
+          fontWeight: 'bold',
+          color: '#58bfbc',
+          marginBottom: '1.5rem'
+        }}>Your Profile</h2>
 
       <p><strong>Email:</strong> {userEmail}</p>
 
@@ -90,13 +106,25 @@ export default function Profile() {
         <p>Loading profile...</p>
       )}
 
-      <div style={{ marginTop: '2rem' }}>
-        <button onClick={() => navigate('/feed')} style={{ marginRight: '1rem' }}>
+      <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'center', gap: '1rem' }}>
+        <button  className="pastel-button" onClick={() => navigate('/feed')} style={{ marginRight: '1rem' }}>
           Back to Feed
         </button>
-        <button onClick={handleLogout} style={{ backgroundColor: '#f44336', color: 'white' }}>
-          Logout
+        <button  
+            style={{
+              backgroundColor: '#f44336',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '10px',
+              padding: '8px 16px',
+              fontWeight: 'bold',
+              cursor: 'pointer'
+            }}
+            onClick={handleLogout}
+          >
+            Logout
         </button>
+      </div>
       </div>
     </div>
   );
