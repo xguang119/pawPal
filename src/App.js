@@ -23,7 +23,7 @@ import Register from './Register';
 
 function App() {
   const [user, setUser] = useState(null);
-  const [profileExists, setProfileExists] = useState(null); // null = unknown
+  const [profileExists, setProfileExists] = useState(null); 
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {

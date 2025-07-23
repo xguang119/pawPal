@@ -66,15 +66,15 @@ p, input, label, button {
 }
 
 .description-heading {
-  font-size: 2.5rem; /* You can increase to 2.5rem if needed */
+  font-size: 2.5rem; 
   font-weight: 700;
   margin-bottom: 1rem;
 }
 
 .description-text {
-  font-size: 1.5rem; /* Try 1.5rem for larger */
+  font-size: 1.5rem; 
   font-weight: 400;
-  line-height: 1.6; /* Optional: adds vertical breathing room */
+  line-height: 1.6; 
 }
 
 .description-block {
@@ -83,7 +83,7 @@ p, input, label, button {
 }
 
 .pastel-button.post-button {
-  padding: 10px 32px;      /* wider */
+  padding: 10px 32px;      /* wider for post*/
   font-weight: bold;
   font-size: 1.5rem;
 }
