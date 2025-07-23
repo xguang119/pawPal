@@ -54,6 +54,21 @@ export default function PostRequest() {
       imageUrl = urlData.publicUrl;
     }
 
+    const { data: { user } } = await supabase.auth.getUser();
+    const { data: profileData, error: profileError } = await supabase
+      .from("profile")
+      .select("location")
+      .eq("id", user.id)//id=user id to confirm who is that
+      .single()
+
+    //if not exit
+    if (profileError || !profileData) {
+      console.error("Failed to fetch location from profile:", profileError);
+      return;
+    }
+//get location
+const userLocation = profileData.location
+
     const { error: insertError } = await supabase.from('requests').insert([{
       service,
       description,
@@ -64,6 +79,7 @@ export default function PostRequest() {
       image_url: imageUrl,
       status: 'pending',
       username,
+      location: userLocation,//add location to request form
     }]);
 
     if (insertError) {
